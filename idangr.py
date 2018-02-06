@@ -3,13 +3,14 @@ import angr
 import idaapi
 import idc
 
+
 idc.RefreshDebuggerMemory()
 
 fpath = idaapi.get_input_file_path()
 
 project = angr.Project(fpath, load_options={"auto_load_libs":False})
 
-mem = SimSymbolicIdaMemory(memory_backer=proj.loader.memory, permissions_backer=None, memory_id="mem")
+mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
 
 state = project.factory.blank_state(plugins={"memory": mem})
 
