@@ -1,27 +1,36 @@
 import angr
 import claripy
+import socket
+
+project = angr.Project("test0.exe")
+
+@project.hook(0x00401493, length=5)
+def wsa_call(state):
+    return
+
+@project.hook(0x004014AC, length=5)
+def ghn_call(state):
+    h = socket.gethostname()
+    state.memory.store(state.regs.esp, h)
 
 
-def main():
-    project = angr.Project("test0.exe")
+argv1 = claripy.BVS("argv1",100*8) #since we do not the length now, we just put 100 bytes
+initial_state = project.factory.blank_state()
 
-    #create an initial state with a symbolic bit vector as argv1
-    argv1 = claripy.BVS("argv1",100*8) #since we do not the length now, we just put 100 bytes
-    initial_state = project.factory.entry_state(args=["./crackme1",argv1])
+initial_state.regs.eip=0x00401460
+initial_state.memory.store(initial_state.memory.load(initial_state.regs.esp + 8, 4).reversed, argv1)
 
-    #create a path group using the created initial state 
-    sm = project.factory.simulation_manager(initial_state)
+sm = project.factory.simulation_manager(initial_state)
 
-    #symbolically execute the program until we reach the wanted value of the instruction pointer
-    print sm.explore(find=0x004014D2, avoid=[0x004014E0]) #at this instruction the binary will print the "correct" message
+e = sm.explore(find=0x004014D2, avoid=[0x004014E0], n=1)
+print e
 
-    found = sm.found[0]
-    #ask to the symbolic solver to get the value of argv1 in the reached state as a string
-    solution = found.solver.eval(argv1, cast_to=str)
+while len(sm.found) == 0:
+    e = sm.explore(find=0x004014D2, avoid=[0x004014E0], n=1)
+    print e
+    #print e.active[0].regs.eip
 
-    print repr(solution)
-    solution = solution[:solution.find("\x00")]
-    print solution
+found = sm.found[0]
+solution = found.solver.eval(argv1, cast_to=str)
+print repr(solution)
 
-if __name__ == '__main__':
-    main()
