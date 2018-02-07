@@ -1,5 +1,5 @@
 # IDAngr
-Use angr in the ida debugger taking as state the current debugger state
+Use angr in the ida debugger generating a state from the current debug session
 
 > Very naive version, it works but i must improve it
 
