@@ -25,7 +25,8 @@ class IdaPage(paged_memory.BasePage):
         storage = kwargs.pop("storage", None)
         self._sinkhole = kwargs.pop("sinkhole", None)
         
-        seg = idaapi.getseg(args[0])
+        #read page permissions from debugger
+        seg = idaapi.getseg(args[0]) ### CHANGE TO SUPPORT OTHER DEBUGGERS
         if seg is not None:
             perms = 0
             if seg.perm & idaapi.SEGPERM_EXEC:
@@ -83,7 +84,8 @@ class IdaPage(paged_memory.BasePage):
         """
         mo = self._storage[page_idx-self._page_addr]
         #print filter(lambda x: x != None, self._storage)
-        return SimMemoryObject(claripy.BVV(idc.Byte(page_idx),8), page_idx) if mo is None else mo
+        byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+        return SimMemoryObject(claripy.BVV(byte_val, 8), page_idx) if mo is None else mo
 
     def load_slice(self, state, start, end):
         """
@@ -100,9 +102,9 @@ class IdaPage(paged_memory.BasePage):
         for addr in range(max(start, self._page_addr), min(end, self._page_addr + self._page_size)):
             i = addr - self._page_addr
             mo = self._storage[i]
-            #print mo, hex(idc.Byte(addr))
             if mo is None:
-                mo = SimMemoryObject(claripy.BVV(idc.Byte(addr), 8), addr)
+                byte_val = idc.Byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+                mo = SimMemoryObject(claripy.BVV(byte_val, 8), addr)
             if mo is not None and (not items or items[-1][1] is not mo):
                 items.append((addr, mo))
         #print filter(lambda x: x != None, self._storage)
