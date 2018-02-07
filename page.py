@@ -84,8 +84,11 @@ class IdaPage(paged_memory.BasePage):
         """
         mo = self._storage[page_idx-self._page_addr]
         #print filter(lambda x: x != None, self._storage)
-        byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
-        return SimMemoryObject(claripy.BVV(byte_val, 8), page_idx) if mo is None else mo
+        if mo is None:    
+            byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+            mo = SimMemoryObject(claripy.BVV(byte_val, 8), page_idx)
+            self._storage[page_idx-self._page_addr] = mo
+        return mo
 
     def load_slice(self, state, start, end):
         """
@@ -105,6 +108,7 @@ class IdaPage(paged_memory.BasePage):
             if mo is None:
                 byte_val = idc.Byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
                 mo = SimMemoryObject(claripy.BVV(byte_val, 8), addr)
+                self._storage[i] = mo
             if mo is not None and (not items or items[-1][1] is not mo):
                 items.append((addr, mo))
         #print filter(lambda x: x != None, self._storage)
