@@ -2,7 +2,7 @@
 Use angr in the ida debugger generating a state from the current debug session
 
 <p align="center">
-![IDAngr logo](http://andreafioraldi.altervista.org/idangr.png)
+<img src="http://andreafioraldi.altervista.org/idangr.png">
 </p>
 
 > Very naive version, it works but i must improve it
