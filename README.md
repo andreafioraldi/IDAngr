@@ -1,16 +1,17 @@
 # IDAngr
-use angr in the ida debugger taking as state the current debugger state
+Use angr in the ida debugger taking as state the current debugger state
 
-## VERY NAIVE VERSION
+> Very naive version, it works but i must improve it
+> If you want to contribute pr are accepted
 
-### usage
+## Usage
 
 1. Load the idangr.py script from the ida menu to create an angr project
-2. During the debug get an instance of StateManager or StateShot
+2. During the debug create an instance of StateManager or StateShot
 3. Do things with angr
 4. Return to 2 or exit
 
-### api
+## Api
 
 #### StateShot
 
@@ -18,15 +19,15 @@ Return an angr state from the current debug session state.
 
 #### StateManager
 
-A wrapper around angr to simplify the symbolic values creation and to write the result back on the debugger when angr found a valid path.
+A wrapper around angr to simplify the symbolic values creation and to write the results back in the debugger when angr founds a valid path.
 
-##### methods
+##### Methods
 + `instance.sim(key, size)`        create a symbolic value on a register or on a memory address (size is optional)
 + `instance[key]`                  get a symbolic value created previously
 + `instance.simulation_manager()`  create an angr simulation manager based on the state
 + `instance.to_dbg(found_state)`   transfer to the debugger state the evaluated value of the symbolic value created before with sim
 
-### example
+## Example
 
 ```python
 Python>sm = StateManager()
@@ -45,3 +46,10 @@ Python>idc.GetRegValue("edi")
 Python>idc.GetRegValue("esi")
 0
 ```
+
+## TODO
++ improve memory read from debugger
++ create abstract classes to work with different debuggers
++ gui for IDA
+
+
