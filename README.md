@@ -28,9 +28,14 @@ A wrapper around angr to simplify the symbolic values creation and to write the 
 
 ##### Methods
 + `instance.sim(key, size)`        create a symbolic value on a register or on a memory address (size is optional)
-+ `instance[key]`                  get a symbolic value created previously
++ `instance[key]`                  get a register or a memory value
 + `instance.simulation_manager()`  create an angr simulation manager based on the state
 + `instance.to_dbg(found_state)`   transfer to the debugger state the evaluated value of the symbolic value created before with sim
+
+A memory value can be processed in two ways:
+
++ `instance[key](size)`                  get the content accordingly to the endness (size is optional), use it to load pointers on stack for example
++ `instance[key].m(size)`                get the raw content
 
 ## Example
 
