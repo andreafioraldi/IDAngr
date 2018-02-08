@@ -1,4 +1,4 @@
-from memory import SimSymbolicIdaMemory
+from mem import SimSymbolicIdaMemory
 import angr
 import idaapi
 import idc
