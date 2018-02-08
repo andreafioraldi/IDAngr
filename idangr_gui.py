@@ -2,12 +2,11 @@ from idangr import *
 from idaapi import PluginForm, Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from idangr_panel import Ui_Form
+from ui import *
 
 __idangr_find = None
 __idangr_avoid = []
 __idangr_symset = SimbolicsSet()
-
 
 
 class IDAngrPanelForm_t(PluginForm):
@@ -20,7 +19,7 @@ class IDAngrPanelForm_t(PluginForm):
         # Get parent widget
         self.parent = self.FormToPyQtWidget(form)
         
-        self.ui = Ui_Form()
+        self.ui = Ui_IDAngrPanel()
         self.ui.setupUi(self.parent)
         
         

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>IDAngrPanel</class>
+ <widget class="QWidget" name="IDAngrPanel">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>IDAngr Panel</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
@@ -22,7 +25,10 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QPushButton" name="resetBtn_2">
+    <widget class="QPushButton" name="todbgBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
       <string>TO DBG</string>
      </property>
@@ -46,24 +52,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>   Symbolic registers</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="registerChooser"/>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QTableView" name="regsView"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout">
        <property name="verticalSpacing">
         <number>20</number>
@@ -77,6 +66,23 @@
        </item>
        <item row="1" column="0">
         <widget class="QTableView" name="memoryView"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>   Symbolic registers</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableView" name="regsView"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="registerChooser"/>
        </item>
       </layout>
      </widget>
