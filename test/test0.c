@@ -1,23 +1,25 @@
-#include <windows.h>
-#include <winsock2.h>
+#include <assert.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
-#pragma comment(lib, "ws2_32.lib")
-//gcc test0.c -o test0 -lws2_32
+void foobar(int a, int b) {
+	int x = 1, y = 0;
+	if (a != 0) {
+		y = 3+x;
+		if (b == 0)
+			x = 2*(a+b);
+	}
+	assert(x-y != 0);
+}
 
-int main(int argc, char **argv) {
-    WORD wVersionRequested = MAKEWORD(2, 2);
-    WSADATA wsaData;
-    WSAStartup(wVersionRequested, &wsaData);
-    
-    char name[100];
-    gethostname(name, 100);
-    
-    if(strcmp(name, argv[1]) == 0) {
-        printf("win\n");
-    }
-    else {
-        printf("lose\n");
-    }
+int main(int argc, char * argv[]) {
+	
+	if (argc != 3)
+		return 1;
+
+	int a = atoi(argv[1]);
+	int b = atoi(argv[2]);
+	foobar(a, b);
+	//printf("%d %d\n", a, b);
+	return 0;
 }

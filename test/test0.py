@@ -1,22 +1,28 @@
 
 sm = StateManager()
 
-print "addr: ", sm[sm["esp"] +4]()
-print "val:", sm[sm[sm["esp"] +4]()].m(100)
-print "reversed val:", sm[sm[sm["esp"] +4]()](100)
+print "target: found a combination of a1 and a2 that fail the assert"
 
-print "before:", idc.GetManyBytes(Dword(idc.GetRegValue("esp")+4), 100)
+print "before:"
+print "  a1 =", Dword(idc.GetRegValue("ebp")+0x8)
+print "  a2 =", Dword(idc.GetRegValue("ebp")+0xc)
 
-sm.sim(sm[sm["esp"] +4](), 100)
+a1 = sm["ebp"] +0x8
+a2 = sm["ebp"] +0xc
+
+sm.sim(a1, 4)
+sm.sim(a2, 4)
 
 print sm.symbolics
 
 m = sm.simulation_manager()
 
-print m.explore(find=0x004014D2, avoid=[0x004014E0])
+print m.explore(find=0x0040149E, avoid=[0x004014BA])
 
 if len(m.found) < 1:
     print "DOH"
 else:
     sm.to_dbg(m.found[0])
-    print "after:", idc.GetManyBytes(Dword(idc.GetRegValue("esp")+4), 100)
+    print "after:"
+    print "  a1 =", Dword(idc.GetRegValue("ebp")+0x8)
+    print "  a2 =", Dword(idc.GetRegValue("ebp")+0xc)

@@ -33,26 +33,6 @@ def StateShot():
     return state
 
 
-class MemoryPointer(object):
-    def __init__(self, state, addr):
-        self.state = state
-        self.addr = addr
-    
-    def __call__(self, size=None):
-        if size is None:
-            size = project.arch.bits / 8
-        if project.arch.memory_endness == "Iend_LE":
-            return self.state.memory.load(self.addr, size).reversed
-        return self.state.memory.load(self.addr, size)
-    
-    def m(self, size):
-        return self.state.memory.load(self.addr, size)
-    
-    def eval(self, size=None, type=int):
-        e = self(size)
-        return self.state.solver.eval(e, cast_to=type)
-    
-
 class StateManager(object):
     def __init__(self, state=None):
         self.state = StateShot() if state is None else state
@@ -88,35 +68,19 @@ class StateManager(object):
         if key in project.arch.registers:
             return getattr(self.state.regs, key)
         elif type(key) == int or type(key) == long:
-            return MemoryPointer(self.state, key)
+            return self.state.mem[key]
         elif type(key) == claripy.ast.bv.BV:
-            #key = self.state.solver.eval(key, cast_to=int)
-            return MemoryPointer(self.state, key)
+            return self.state.mem[key]
         else:
             raise ValueError("key must be a register name or a memory address")
     
     def __setitem__(self, key, value):
-        size = None
-        if type(value) == tuple:
-            if len(value) < 2:
-                raise ValueError("tuple must contains 2 items")
-            size = value[1]
-            value = value[0]
-        elif type(value) == str:
-            size = len(value)
-        elif type(value) == claripy.ast.bv.BV:
-            size = len(value) / 8
-        #print value, size
-        
         if key in project.arch.registers:
-            if size == None:
-                size = project.arch.registers[key][1]
-            self.state.registers.store(key, value, size)
-        elif type(key) == int or type(key) == long:
-            self.state.memory.store(key, value, size)
-        elif type(key) == claripy.ast.bv.BV:
-            #key = self.state.solver.eval(key, cast_to=int)
-            self.state.memory.store(key, value, size)
+            setattr(self.state.regs, key, value)
+        elif type(key) == int or type(key) == long or type(key) == claripy.ast.bv.BV:
+            self.state.memory[key] = value
+        else:
+            raise ValueError("key must be a register name or a memory address")
     
     def simulation_manager(self):
         return project.factory.simulation_manager(self.state)

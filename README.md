@@ -33,10 +33,7 @@ A wrapper around angr to simplify the symbolic values creation and to write the 
 + `instance.simulation_manager()`  create an angr simulation manager based on the state
 + `instance.to_dbg(found_state)`   transfer to the debugger state the evaluated value of the symbolic value created before with sim
 
-A memory value can be processed in two ways:
-
-+ `instance[key](size)`                  get the content accordingly to the endness (size is optional), use it to load pointers on stack for example
-+ `instance[key].m(size)`                get the raw content
+note: memory values are the same that are returned by `state.mem[addr]`
 
 ## Example
 
