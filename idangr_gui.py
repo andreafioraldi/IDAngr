@@ -1,56 +1,56 @@
-'''
-angr plug-in for IDA Pro.
-
-Integrates point and click use of the angr binary analysis framework
-inside of IDA Pro. The plug-in adds a sub menu, called AngryIDA, to
-IDA View-A's pop-up context menu. Inside the IDA View-A window
-right-click and expand the AngryIDA menu item to use.
-'''
-
-from __future__ import print_function
-import idaapi #pylint: disable=import-error
-from idaapi import Form #pylint: disable=import-error
 from idangr import *
+from idaapi import PluginForm, Form
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-FIND_ADDRS = []
-AVOID_ADDRS = []
-EXP_OPTS = {
-    "load":{
-        "auto_load_libs":False
-        },
-    "state":{
-        "discard_lazy_solves":True
-    },
-    "path_group":{
-        "immutable":False
-    },
-    "stdin":{
-        "length":-1,
-        "ascii":False,
-        "null":False,
-        "white_space":False,
-        "newline":True
-    }
-}
+from idangr_panel import Ui_Form
+
+__idangr_find = None
+__idangr_avoid = []
+__idangr_symset = SimbolicsSet()
+
+
+
+class IDAngrPanelForm_t(PluginForm):
+   
+    def OnCreate(self, form):
+        """
+        Called when the plugin form is created
+        """
+
+        # Get parent widget
+        self.parent = self.FormToPyQtWidget(form)
+        
+        self.ui = Ui_Form()
+        self.ui.setupUi(self.parent)
+        
+        
+    def OnClose(self, form):
+        """
+        Called when the plugin form is closed
+        """
+        global __idangr_panel
+        del __idangr_panel
+
+
+    def Show(self):
+        """Creates the form is not created or focuses it if it was"""
+        return PluginForm.Show(self,
+                               "IDAngr Panel",
+                               options = PluginForm.FORM_PERSIST)
+    
+
+try:
+    __idangr_panel
+except:
+    __idangr_panel = IDAngrPanelForm_t()
+
+__idangr_panel.Show()
+
+
 
 class TestEmbeddedChooserClass(Choose2):
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
+
     def __init__(self, title, nb=5, flags=0):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         Choose2.__init__(
             self,
             title,
@@ -66,72 +66,24 @@ class TestEmbeddedChooserClass(Choose2):
         self.selcount = 0
 
     def make_item(self):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         r = [str(self.n), "func_%04d" % self.n]
         self.n += 1
         return r
 
     def OnClose(self):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         pass
 
     def OnGetLine(self, n):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         print("getline %d" % n)
         return self.items[n]
 
     def OnGetSize(self):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         n = len(self.items)
         print("getsize -> %d" % n)
         return n
 
 class ExpForm(Form):
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     def __init__(self):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         self.invert = False
         self.EChooser = TestEmbeddedChooserClass("E1", flags=Choose2.CH_MULTI)
         Form.__init__(self, r"""STARTITEM {id:rDiscardLazySolves}
@@ -153,35 +105,12 @@ Symbolic stdin
     })
 
 class ActionHandler(idaapi.action_handler_t):
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
+
     def __init__(self, action):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         idaapi.action_handler_t.__init__(self)
         self.action = action
 
     def activate(self, ctx):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         if self.action == "Finds:Set":
             find_set()
         elif self.action == "Finds:Remove":
@@ -204,25 +133,10 @@ class ActionHandler(idaapi.action_handler_t):
             my_quit()
 
     def update(self, ctx):
-        """
-        Arguments:
-        Return Value:
-        Description:
-            -
-        TODO:
-            - Doc String
-        """
         return idaapi.AST_ENABLE_ALWAYS
 
 class Hooks(idaapi.UI_Hooks):
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
+
     @staticmethod
     def finish_populating_tform_popup(form, popup):
         """
@@ -245,42 +159,9 @@ class Hooks(idaapi.UI_Hooks):
         idaapi.attach_action_to_popup(form, popup, "Quit:Quit", "AngryIDA/")
 
 def set_line_color(color, addr=here(), item=CIC_ITEM): #pylint: disable=undefined-variable
-    """
-    Arguments:
-        Mandatory:
-            - ( Name: color,
-                Position: 0,
-                Type: int,
-                Value: hex/int color value )
-        Optional:
-            - ( Name: addr,
-                Position: 1,
-                Type: int,
-                Default: here(),
-                Value: hex/int memory address )
-            - ( Name: item,
-                Position: 2,
-                Type: IDA Item,
-                Default: CIC_ITEM,
-                Value: IDA Item )
-    Return: None
-    Description:
-        Change instruction line color in IDA with specified color and address.
-        Disabled pylint errors due to IDA function calls.
-    TODO:
-        Nothing currently.
-    """
     SetColor(addr, item, color) #pylint: disable=undefined-variable
 
 def find_set():
-    """
-    Arguments: None
-    Return Value: None
-    Description:
-        - Toggles find address in list and color on screen.
-    TODO:
-        - Better description
-    """
     addr = idaapi.get_screen_ea()
     if addr in AVOID_ADDRS:
         AVOID_ADDRS.remove(addr)
@@ -290,14 +171,6 @@ def find_set():
     print("AngryIDA: Added find address [%s]" % hex(addr))
 
 def find_remove():
-    """
-    Arguments: None
-    Return Value: None
-    Description:
-        - Toggles find address in list and color on screen.
-    TODO:
-        - Better description
-    """
     addr = idaapi.get_screen_ea()
     if addr in FIND_ADDRS:
         FIND_ADDRS.remove(addr)
@@ -305,27 +178,11 @@ def find_remove():
         print("AngryIDA: Removed find address [%s]" % hex(addr))
 
 def find_view():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     print("AngryIDA:\n\tFind Addresses")
     for addr in FIND_ADDRS:
         print("\t\t%s" % hex(addr))
 
 def avoid_set():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     addr = idaapi.get_screen_ea()
     if addr in FIND_ADDRS:
         FIND_ADDRS.remove(addr)
@@ -335,14 +192,6 @@ def avoid_set():
     print("AngryIDA: Added avoid address [%s]" % hex(addr))
 
 def avoid_remove():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     addr = idaapi.get_screen_ea()
     if addr in AVOID_ADDRS:
         AVOID_ADDRS.remove(addr)
@@ -350,32 +199,11 @@ def avoid_remove():
         print("AngryIDA: Removed avoid address [%s]" % hex(addr))
 
 def avoid_view():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     print("\tAvoid Addresses")
     for addr in AVOID_ADDRS:
         print("\t\t%s" % hex(addr))
 
 def explore_run():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-        - Handle Symbolic Arguments
-        - Handle Multiple Symbolic stdin
-        - Handle Symbolic Files
-        - Handle Symbolic Memory
-        -
-    """
     sm = StateManager()
 
     print(EXP_OPTS)
@@ -403,18 +231,6 @@ def explore_run():
     print("Found: "+ found.se.any_str(found.posix.files[0].read_from(EXP_OPTS["stdin"]["length"])))
 
 def explore_options():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Better Rule Creation
-            - Setting specific locations
-        - Multiple stdin
-        - Symbolic Files
-        - Symbolic Arguments
-    """
     EXP_FORM.Execute()
     EXP_OPTS["state"]["discard_lazy_solves"] = EXP_FORM.rDiscardLazySolves.checked
     EXP_OPTS["load"]["auto_load_libs"] = EXP_FORM.rAutoLoadLibs.checked
@@ -426,14 +242,6 @@ def explore_options():
     EXP_OPTS["stdin"]["length"] = EXP_FORM.iStdinLen.value
 
 def refresh():
-    """
-    Arguments:
-    Return Value:
-    Description:
-        -
-    TODO:
-        - Doc String
-    """
     print(FIND_ADDRS, AVOID_ADDRS)
     for addr in FIND_ADDRS:
         set_line_color(0xffffff, addr)
@@ -444,19 +252,6 @@ def refresh():
     print("AngryIDA: Refresh completed.")
 
 def my_quit():
-    """
-    Arguments: None
-    Return Value: None
-    Description:
-        -
-    TODO:
-        - Stop script
-        - Clean state
-        - Remove context menu
-        - Undo any hot-keys (No hot-keys used currently)
-        - Reset changes to IDA views (Color/highlighting)
-        - Description
-    """
     return None
 
 #------------------------------MAIN------------------------------------
