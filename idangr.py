@@ -6,16 +6,20 @@ import claripy
 
 project = None
 
-def StateShot():
-    global project
-    
-    idc.RefreshDebuggerMemory()
-
+def load_project():
     fpath = idaapi.get_input_file_path()
 
     if project == None:
         project = angr.Project(fpath, load_options={"auto_load_libs":False})
 
+
+def StateShot():
+    global project
+    
+    idc.RefreshDebuggerMemory()
+
+    load_project()
+    
     mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
 
     state = project.factory.blank_state(plugins={"memory": mem})

@@ -1,16 +1,48 @@
-from idangr import *
 from idaapi import PluginForm, Form
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from ui import *
+#from idangr import *
+
+import sip
 
 __idangr_find = None
 __idangr_avoid = []
-__idangr_symset = SimbolicsSet()
+#__idangr_symset = SimbolicsSet()
+
+
+#load_project()
 
 
 class IDAngrPanelForm_t(PluginForm):
-   
+    
+    def onFindCtxMenu(self, point):
+        m = QtWidgets.QMenu(self.ui.findView)
+        def delete():
+            model = self.ui.findView.model()
+            for i in self.ui.findView.selectedIndexes():
+                model.removeRow(i.row())
+        m.addAction('Delete', delete)
+        m.exec_(self.ui.findView.viewport().mapToGlobal(point))
+    
+    def onAvoidCtxMenu(self, point):
+        m = QtWidgets.QMenu(self.ui.avoidView)
+        def delete():
+            model = self.ui.avoidView.model()
+            for i in self.ui.avoidView.selectedIndexes():
+                model.removeRow(i.row())
+        m.addAction('Delete', delete)
+        m.exec_(self.ui.avoidView.viewport().mapToGlobal(point))
+
+    def addFind(self, addr):
+        item = QtWidgets.QListWidgetItem(hex(addr))
+        self.ui.findView.addItem(item)
+
+    def addAvoid(self, addr):
+        item = QtWidgets.QListWidgetItem(hex(addr))
+        self.ui.avoidView.addItem(item)
+    
+
     def OnCreate(self, form):
         """
         Called when the plugin form is created
@@ -22,13 +54,29 @@ class IDAngrPanelForm_t(PluginForm):
         self.ui = Ui_IDAngrPanel()
         self.ui.setupUi(self.parent)
         
+        model = QtGui.QStandardItemModel()
+        model.setHorizontalHeaderLabels(['Name', 'Size', 'Value'])
+        self.ui.regsView.setModel(model)
+        
+        model = QtGui.QStandardItemModel()
+        model.setHorizontalHeaderLabels(['Address', 'Length', 'Value'])
+        self.ui.memoryView.setModel(model)
+        
+        self.ui.findView.customContextMenuRequested.connect(self.onFindCtxMenu)
+        self.ui.avoidView.customContextMenuRequested.connect(self.onAvoidCtxMenu)
+        
+        #test
+        self.addFind(0xaaaa)
+        self.addAvoid(0xbbbb)
+        self.addAvoid(0xcccc)
+        
         
     def OnClose(self, form):
         """
         Called when the plugin form is closed
         """
-        global __idangr_panel
-        del __idangr_panel
+        global _idangr_panel
+        del _idangr_panel
 
 
     def Show(self):
@@ -37,13 +85,13 @@ class IDAngrPanelForm_t(PluginForm):
                                "IDAngr Panel",
                                options = PluginForm.FORM_PERSIST)
     
-
+'''
 try:
-    __idangr_panel
+    _idangr_panel
 except:
-    __idangr_panel = IDAngrPanelForm_t()
-
-__idangr_panel.Show()
+    _idangr_panel = IDAngrPanelForm_t()'''
+_idangr_panel = IDAngrPanelForm_t()
+_idangr_panel.Show()
 
 
 

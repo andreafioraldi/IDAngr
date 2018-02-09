@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>IDAngrPanel</class>
  <widget class="QWidget" name="IDAngrPanel">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1614</width>
-    <height>1321</height>
+    <width>1276</width>
+    <height>868</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,46 +19,77 @@
   <property name="layoutDirection">
    <enum>Qt::LeftToRight</enum>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
+  <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0">
-    <widget class="QPushButton" name="resetBtn">
-     <property name="text">
-      <string>RESET</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="todbgBtn">
+    <widget class="QWidget" name="widget" native="true">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
-     <property name="text">
-      <string>TO DBG</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+     <property name="minimumSize">
       <size>
-       <width>1352</width>
-       <height>20</height>
+       <width>0</width>
+       <height>61</height>
       </size>
      </property>
-    </spacer>
+     <widget class="QPushButton" name="resetBtn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>RESET</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="runBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>RUN</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="todbgBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TO DBG</string>
+      </property>
+     </widget>
+    </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <widget class="QWidget" name="layoutWidget">
+   <item row="1" column="0">
+    <layout class="QGridLayout" name="gridLayout_5">
+     <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout">
+       <property name="horizontalSpacing">
+        <number>12</number>
+       </property>
        <property name="verticalSpacing">
-        <number>20</number>
+        <number>16</number>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
@@ -64,13 +98,37 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QTableView" name="memoryView"/>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="hexMemBox">
+         <property name="text">
+          <string>HEX</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableView" name="memoryView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+        </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
+     </item>
+     <item row="0" column="1">
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableView" name="regsView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="registerChooser"/>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -78,11 +136,54 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QTableView" name="regsView"/>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QSplitter" name="splitter_2">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>   Find</string>
+         </property>
+        </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="registerChooser"/>
+       <item row="1" column="0">
+        <widget class="QListWidget" name="findView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="layoutWidget_2">
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>   Avoid</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QListWidget" name="avoidView">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
