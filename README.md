@@ -4,10 +4,12 @@
 <img src="http://andreafioraldi.altervista.org/idangr.png">
 </p>
 
-Use angr in the ida debugger generating a state from the current debug session
+Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a state from the current debug session.
 
 > Very naive version, it works but i must improve it
-
+>
+> The GUI is not yet usable
+>
 > If you want to contribute pr are accepted
 
 ## Usage
@@ -54,6 +56,8 @@ Python>idc.GetRegValue("edi")
 Python>idc.GetRegValue("esi")
 0
 ```
+
+See examples folder.
 
 ## TODO
 + improve memory read from debugger
