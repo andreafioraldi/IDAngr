@@ -57,11 +57,11 @@ Python>idc.GetRegValue("esi")
 0
 ```
 
-See examples folder.
+See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) folder.
 
 ## TODO
 + improve memory read from debugger
 + create abstract classes to work with different debuggers
-+ gui for IDA
++ gui for IDA (idangr_gui.py)
 
 
