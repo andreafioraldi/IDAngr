@@ -4,24 +4,19 @@ import idaapi
 import idc
 import claripy
 
-project = None
-
-def load_project():
-    fpath = idaapi.get_input_file_path()
-
-    if project == None:
-        project = angr.Project(fpath, load_options={"auto_load_libs":False})
-
+print
+print "########### IDAngr ###########"
+print "  usage: sm = StateManager()"
+print
+print " >> creating angr project..."
+project = angr.Project(idaapi.get_input_file_path(), load_options={"auto_load_libs":False})
+print " >> done."
 
 def StateShot():
     global project
-    
     idc.RefreshDebuggerMemory()
-
-    load_project()
     
     mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
-
     state = project.factory.blank_state(plugins={"memory": mem})
 
     for reg in sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[1]):
@@ -156,11 +151,5 @@ class StateManager(object):
                 print " >> failed to write %s to debugger" % key
                 #print ee
 
-
-print
-print "########### IDAngr ###########"
-print "  usage: sm = StateManager()"
-print "##############################"
-print
 
 

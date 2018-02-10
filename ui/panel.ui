@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1276</width>
-    <height>868</height>
+    <width>1547</width>
+    <height>1042</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -113,6 +113,12 @@
          <property name="contextMenuPolicy">
           <enum>Qt::CustomContextMenu</enum>
          </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -123,6 +129,12 @@
         <widget class="QTableView" name="regsView">
          <property name="contextMenuPolicy">
           <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -165,6 +177,12 @@
          <property name="contextMenuPolicy">
           <enum>Qt::CustomContextMenu</enum>
          </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
@@ -182,6 +200,9 @@
         <widget class="QListWidget" name="avoidView">
          <property name="contextMenuPolicy">
           <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
         </widget>
        </item>
