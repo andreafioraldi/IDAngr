@@ -12,6 +12,8 @@ Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a st
 >
 > If you want to contribute pr are accepted
 
+note: to install angr on Windows without compiling it look [here](https://github.com/andreafioraldi/angr-win64-wheels)
+
 ## Usage
 
 1. Load the idangr.py script from the ida menu to create an angr project
