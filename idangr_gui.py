@@ -16,6 +16,45 @@ _idangr_simregs = []
 _idangr_simmem = []
 
 
+
+class IDAngrAddMemDialog(QtWidgets.QDialog):
+    
+    def __init__(self):
+        QtWidgets.QDialog.__init__(self)
+        
+        self.ui = Ui_IDAngrAddMem()
+        self.ui.setupUi(self)
+        
+        self.ui.lenTextEdit.setPlainText(str(project.arch.bits / 8))
+        
+    def setAddr(self, addr):
+        if type(addr) == int or type(addr) == long:
+            addr = "0x%x" % addr
+        self.ui.addrTextEdit.setPlainText(addr)
+    
+    @staticmethod
+    def getMem(addr):
+        dialog = IDAngrAddMemDialog()
+        dialog.setAddr(addr)
+        r = dialog.exec_()
+        if r == QtWidgets.QDialog.Accepted:
+            addr = dialog.ui.addrTextEdit.toPlainText()
+            try:
+                addr = int(addr, 16)
+            except:
+                QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "Address not in hex format").exec_()
+                return None
+            length = dialog.ui.lenTextEdit.toPlainText()
+            try:
+                length = int(length)
+            except:
+                QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "Length not in dec format").exec_()
+                return None
+            return (addr, length)
+        return None
+            
+        
+
 class IDAngrTableModel(QtCore.QAbstractTableModel):
 
     def __init__(self, datain, headerdata, parent=None):
@@ -94,6 +133,28 @@ class IDAngrPanelForm(PluginForm):
     def todbgClicked(self):
         pass
     
+    
+    def onRegsCtxMenu(self, point):
+        m = QtWidgets.QMenu(self.ui.regsView)
+        def delete():
+            model = self.ui.regsView.model()
+            for i in self.ui.regsView.selectedIndexes():
+                _idangr_simregs.pop(i.row())
+            self.ui.regsView.model().layoutChanged.emit()
+        m.addAction('Delete', delete)
+        m.exec_(self.ui.regsView.viewport().mapToGlobal(point))
+
+    def onMemCtxMenu(self, point):
+        m = QtWidgets.QMenu(self.ui.memoryView)
+        def delete():
+            model = self.ui.memoryView.model()
+            for i in self.ui.memoryView.selectedIndexes():
+                _idangr_simmem.pop(i.row())
+            self.ui.memoryView.model().layoutChanged.emit()
+        m.addAction('Delete', delete)
+        m.exec_(self.ui.memoryView.viewport().mapToGlobal(point))
+
+    
     def addReg(self, idx):
         global _idangr_simregs, project
         reg = _idangr_avalregs[idx]
@@ -109,6 +170,11 @@ class IDAngrPanelForm(PluginForm):
             addr = "0x%x" % addr
         _idangr_simmem.append([addr, size, "?"])
         self.ui.memoryView.model().layoutChanged.emit()
+    
+    def removeMem(self, addr):
+        pass
+    
+    
     
     def OnCreate(self, form):
         """
@@ -144,11 +210,10 @@ class IDAngrPanelForm(PluginForm):
         self.ui.memoryView.setModel(tablemodel)
         self.ui.memoryView.resizeColumnsToContents()
         
+        self.ui.regsView.customContextMenuRequested.connect(self.onRegsCtxMenu)
+        self.ui.memoryView.customContextMenuRequested.connect(self.onMemCtxMenu)
         
-        #test
         
-        self.addMem(0xabadcafe, 123)
-        self.addMem(0xdeadbeef, 99)
 
     def OnClose(self, form):
         """
@@ -163,6 +228,7 @@ class IDAngrPanelForm(PluginForm):
         return PluginForm.Show(self,
                                "IDAngr Panel",
                                options = PluginForm.FORM_PERSIST)
+
 
 
 
@@ -194,7 +260,13 @@ class IDAngrActionHandler(idaapi.action_handler_t):
             _idangr_avoid.append(addr)
             _idangr_panel.addAvoid(addr)
         elif self.action == "Symbolic":
-            print 666
+            addr = idaapi.get_screen_ea()
+            #if addr in _idangr_simmem:
+            #    return
+            m = IDAngrAddMemDialog.getMem(addr)
+            if m != None:
+                _idangr_panel.addMem(m[0], m[1])
+        
         
     def update(self, ctx):
         return idaapi.AST_ENABLE_ALWAYS

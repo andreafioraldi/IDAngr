@@ -114,7 +114,7 @@
           <enum>Qt::CustomContextMenu</enum>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="sortingEnabled">
           <bool>false</bool>
@@ -131,7 +131,7 @@
           <enum>Qt::CustomContextMenu</enum>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::SingleSelection</enum>
          </property>
          <property name="sortingEnabled">
           <bool>false</bool>
