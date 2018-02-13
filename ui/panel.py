@@ -25,7 +25,7 @@ class Ui_IDAngrPanel(object):
         self.resetBtn.setGeometry(QtCore.QRect(10, 10, 121, 45))
         self.resetBtn.setObjectName("resetBtn")
         self.runBtn = QtWidgets.QPushButton(self.widget)
-        self.runBtn.setEnabled(False)
+        self.runBtn.setEnabled(True)
         self.runBtn.setGeometry(QtCore.QRect(140, 10, 121, 45))
         self.runBtn.setObjectName("runBtn")
         self.todbgBtn = QtWidgets.QPushButton(self.widget)

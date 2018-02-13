@@ -15,7 +15,8 @@ _idangr_avalregs = []
 _idangr_simregs = []
 _idangr_simmem = []
 
-
+_idangr_stateman = None
+_idangr_foundstate = None
 
 class IDAngrAddMemDialog(QtWidgets.QDialog):
     
@@ -125,13 +126,53 @@ class IDAngrPanelForm(PluginForm):
     
     
     def resetClicked(self):
-        pass
+        global _idangr_simregs, _idangr_simmem, _idangr_find, _idangr_avoid
+        while len(_idangr_simregs) > 0:
+            _idangr_simregs.pop()
+        while len(_idangr_simmem) > 0:
+            _idangr_simmem.pop()
+        _idangr_find = []
+        _idangr_avoid = []
+        self.ui.regsView.model().layoutChanged.emit()
+        self.ui.memoryView.model().layoutChanged.emit()
+        self.ui.findView.clear()
+        self.ui.avoidView.clear()
+        self.ui.todbgBtn.setEnabled(False)
+        #self.ui.runBtn.setEnabled(True)
+        
     
     def runClicked(self):
-        pass
-    
+        global _idangr_stateman, _idangr_find, _idangr_avoid, _idangr_simregs, _idangr_simmem, _idangr_foundstate
+        #TODO check if debugger is running
+        _idangr_stateman = StateManager()
+        for e in _idangr_simregs:
+            _idangr_stateman.sim(e[0])
+        for e in _idangr_simmem:
+            _idangr_stateman.sim(int(e[0], 16), int(e[1]))
+        sm = _idangr_stateman.simulation_manager()
+        sm.explore(find=_idangr_find, avoid=_idangr_avoid)
+        if len(sm.found) == 0:
+            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(_idangr_stateman) + "\n").exec_()
+            return
+        _idangr_foundstate = sm.found[0]
+        conc = _idangr_stateman.concretize(_idangr_foundstate)
+        for i in xrange(len(_idangr_simregs)):
+            try:
+                _idangr_simregs[i][2] = conc[_idangr_simregs[i][0]]
+            except: pass
+        for i in xrange(len(_idangr_simmem)):
+            try:
+                _idangr_simmem[i][2] = conc[int(_idangr_simmem[i][0], 16)]
+            except: pass
+        print _idangr_simmem
+        self.ui.regsView.model().layoutChanged.emit()
+        self.ui.memoryView.model().layoutChanged.emit()
+        self.ui.todbgBtn.setEnabled(True)
+        
+        
     def todbgClicked(self):
-        pass
+        global _idangr_stateman, _idangr_foundstate
+        _idangr_stateman.to_dbg(_idangr_foundstate)
     
     
     def onRegsCtxMenu(self, point):
@@ -266,6 +307,7 @@ class IDAngrActionHandler(idaapi.action_handler_t):
             m = IDAngrAddMemDialog.getMem(addr)
             if m != None:
                 _idangr_panel.addMem(m[0], m[1])
+                #_idangr_simmem.append(m)
         
         
     def update(self, ctx):

@@ -150,6 +150,21 @@ class StateManager(object):
             except Exception as ee:
                 print " >> failed to write %s to debugger" % key
                 #print ee
-
-
+    
+    def concretize(self, found_state):
+        if type(found_state) == StateManager:
+            return self.concretize(found_state.state)
+        ret = {}
+        for key in self.symbolics:
+            try:
+                if key in project.arch.registers:
+                    r = found_state.solver.eval(self.symbolics[key][0], cast_to=int)
+                    ret[key] = r
+                else:
+                    r = found_state.solver.eval(self.symbolics[key][0], cast_to=str)
+                    ret[key] = r
+            except Exception as ee:
+                print " >> failed to concretize %s" % key
+                #print ee
+        return ret
 
