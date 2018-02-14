@@ -8,7 +8,7 @@ Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a st
 
 > Very naive version, it works but i must improve it
 >
-> The GUI is not yet usable
+> The GUI is usable now but it has only basic features
 >
 > If you want to contribute pr are accepted
 
@@ -20,6 +20,14 @@ note: to install angr on Windows without compiling it look [here](https://github
 2. During the debug create an instance of StateManager or StateShot
 3. Do things with angr
 4. Return to 2 or exit
+
+## GUI
+
+The idangr_gui.py script must be loaded during debugging.
+
+IDAngr adds a panel with a self explanatory interface.
+
+You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
 
 ## Api
 
@@ -63,7 +71,6 @@ See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) fo
 
 ## TODO
 + improve memory read from debugger
-+ create abstract classes to work with different debuggers
-+ gui for IDA (idangr_gui.py)
++ create abstract classes to work with different debuggers (radare2 coming soon!)
 
 
