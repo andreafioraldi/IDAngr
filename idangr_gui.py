@@ -18,6 +18,7 @@ _idangr_simmem = []
 _idangr_stateman = None
 _idangr_foundstate = None
 
+
 class IDAngrAddMemDialog(QtWidgets.QDialog):
     
     def __init__(self):
