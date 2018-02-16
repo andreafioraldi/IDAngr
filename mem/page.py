@@ -25,19 +25,6 @@ class IdaPage(paged_memory.BasePage):
         storage = kwargs.pop("storage", None)
         self._sinkhole = kwargs.pop("sinkhole", None)
         
-        #read page permissions from debugger
-        seg = idaapi.getseg(args[0]) ### CHANGE TO SUPPORT OTHER DEBUGGERS
-        if seg is not None:
-            perms = 0
-            if seg.perm & idaapi.SEGPERM_EXEC:
-                perms += IdaPage.PROT_EXEC
-            if seg.perm & idaapi.SEGPERM_WRITE:
-                perms += IdaPage.PROT_WRITE
-            if seg.perm & idaapi.SEGPERM_READ:
-                perms += IdaPage.PROT_READ
-            kwargs["permissions"] = claripy.BVV(perms, 3)
-            #print "permissions setted %x  %d" % (args[0], perms)
-          
         super(IdaPage, self).__init__(*args, **kwargs)
         self._storage = [ None ] * self._page_size if storage is None else storage
         #print filter(lambda x: x != None, self._storage)
@@ -84,7 +71,7 @@ class IdaPage(paged_memory.BasePage):
         """
         mo = self._storage[page_idx-self._page_addr]
         #print filter(lambda x: x != None, self._storage)
-        if mo is None:    
+        if mo is None and self.from_ida_dbg:    
             byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
             mo = SimMemoryObject(claripy.BVV(byte_val, 8), page_idx)
             self._storage[page_idx-self._page_addr] = mo
@@ -105,7 +92,7 @@ class IdaPage(paged_memory.BasePage):
         for addr in range(max(start, self._page_addr), min(end, self._page_addr + self._page_size)):
             i = addr - self._page_addr
             mo = self._storage[i]
-            if mo is None:
+            if mo is None and self.from_ida_dbg:
                 byte_val = idc.Byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
                 mo = SimMemoryObject(claripy.BVV(byte_val, 8), addr)
                 self._storage[i] = mo
@@ -345,10 +332,29 @@ class SimIdaMemory(object):
                     initialized = True
                 except KeyError:
                     pass
-
+        
+        setattr(new_page, "from_ida_dbg", False)
+        # page from debugger
+        try:
+            seg = idaapi.getseg(new_page_addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+            if seg is not None:
+                perms = 0
+                if seg.perm & idaapi.SEGPERM_EXEC:
+                    perms += IdaPage.PROT_EXEC
+                if seg.perm & idaapi.SEGPERM_WRITE:
+                    perms += IdaPage.PROT_WRITE
+                if seg.perm & idaapi.SEGPERM_READ:
+                    perms += IdaPage.PROT_READ
+                new_page.permissions  = claripy.BVV(perms, 3)
+                #print "permissions setted %x  %d" % (new_page_addr, perms)
+                initialized = True
+                setattr(new_page, "from_ida_dbg", True)
+        except:
+            pass
+        
         if self.state is not None:
             self.state.scratch.pop_priv()
-        return True
+        return initialized
 
     def _get_page(self, page_num, write=False, create=False, initialize=True):
         page_addr = page_num * self._page_size
