@@ -279,7 +279,7 @@ class SimIdaMemory(object):
         if self.state is not None:
             self.state.scratch.push_priv(True)
         
-        return True
+        #return True
         
         if self._memory_backer is None:
             pass
@@ -348,7 +348,7 @@ class SimIdaMemory(object):
 
         if self.state is not None:
             self.state.scratch.pop_priv()
-        return initialized
+        return True
 
     def _get_page(self, page_num, write=False, create=False, initialize=True):
         page_addr = page_num * self._page_size
