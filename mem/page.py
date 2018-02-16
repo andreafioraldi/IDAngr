@@ -71,7 +71,7 @@ class IdaPage(paged_memory.BasePage):
         """
         mo = self._storage[page_idx-self._page_addr]
         #print filter(lambda x: x != None, self._storage)
-        if mo is None and self.from_ida_dbg:    
+        if mo is None and hasattr(self, "from_ida_dbg"):    
             byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
             mo = SimMemoryObject(claripy.BVV(byte_val, 8), page_idx)
             self._storage[page_idx-self._page_addr] = mo
@@ -92,7 +92,7 @@ class IdaPage(paged_memory.BasePage):
         for addr in range(max(start, self._page_addr), min(end, self._page_addr + self._page_size)):
             i = addr - self._page_addr
             mo = self._storage[i]
-            if mo is None and self.from_ida_dbg:
+            if mo is None and hasattr(self, "from_ida_dbg"):
                 byte_val = idc.Byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
                 mo = SimMemoryObject(claripy.BVV(byte_val, 8), addr)
                 self._storage[i] = mo
@@ -333,7 +333,6 @@ class SimIdaMemory(object):
                 except KeyError:
                     pass
         
-        setattr(new_page, "from_ida_dbg", False)
         # page from debugger
         try:
             seg = idaapi.getseg(new_page_addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
