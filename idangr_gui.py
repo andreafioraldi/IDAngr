@@ -19,6 +19,37 @@ _idangr_stateman = None
 _idangr_foundstate = None
 
 
+class IDAngrTextViewerForm(QtWidgets.QDialog):
+    
+    def __init__(self, text, title):
+        QtWidgets.QDialog.__init__(self)
+        self.text = text
+        self.ui = Ui_IDAngrTextViewer()
+        self.ui.setupUi(self)
+        if title:
+            self.setWindowTitle(title)
+        self.ui.plainTextEdit.setPlainText(str(text))
+        self.ui.plainBox.toggled.connect(self.plainToggled)
+        self.ui.hexBox.toggled.connect(self.hexToggled)
+        self.ui.pyBox.toggled.connect(self.pyToggled)
+
+    def plainToggled(self, enabled):
+        if enabled:
+            self.ui.plainTextEdit.setPlainText(str(self.text))
+    
+    def hexToggled(self, enabled):
+        if enabled:
+            self.ui.plainTextEdit.setPlainText(str(self.text).encode("hex"))
+    
+    def pyToggled(self, enabled):
+        if self.ui.pyBox.isChecked():
+            self.ui.plainTextEdit.setPlainText(repr(self.text))
+    
+    @staticmethod
+    def showText(text, title=None):
+        frm = IDAngrTextViewerForm(text, title)
+        frm.exec_()
+
 class IDAngrAddMemDialog(QtWidgets.QDialog):
     
     def __init__(self):
@@ -153,7 +184,9 @@ class IDAngrPanelForm(PluginForm):
         self.ui.findView.clear()
         self.ui.avoidView.clear()
         self.ui.todbgBtn.setEnabled(False)
-        #self.ui.runBtn.setEnabled(True)
+        self.ui.viewStdinBtn.setEnabled(False)
+        self.ui.viewStdoutBtn.setEnabled(False)
+        self.ui.viewStderrBtn.setEnabled(False)
         
     
     def runClicked(self):
@@ -183,6 +216,9 @@ class IDAngrPanelForm(PluginForm):
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.todbgBtn.setEnabled(True)
+        self.ui.viewStdinBtn.setEnabled(True)
+        self.ui.viewStdoutBtn.setEnabled(True)
+        self.ui.viewStderrBtn.setEnabled(True)
         
         
     def todbgClicked(self):
@@ -268,6 +304,18 @@ class IDAngrPanelForm(PluginForm):
     
     
     
+    def viewStdinClicked(self):
+        global _idangr_foundstate
+        IDAngrTextViewerForm.showText(_idangr_foundstate.posix.dumps(0), "Stdin Viewer")
+    
+    def viewStdoutClicked(self):
+        global _idangr_foundstate
+        IDAngrTextViewerForm.showText(_idangr_foundstate.posix.dumps(1), "Stdout Viewer")
+        
+    def viewStderrClicked(self):
+        global _idangr_foundstate
+        IDAngrTextViewerForm.showText(_idangr_foundstate.posix.dumps(2), "Stderr Viewer")
+    
     def OnCreate(self, form):
         """
         Called when the plugin form is created
@@ -286,12 +334,16 @@ class IDAngrPanelForm(PluginForm):
         self.ui.resetBtn.clicked.connect(self.resetClicked)
         self.ui.runBtn.clicked.connect(self.runClicked)
         self.ui.todbgBtn.clicked.connect(self.todbgClicked)
+        self.ui.viewStdinBtn.clicked.connect(self.viewStdinClicked)
+        self.ui.viewStdoutBtn.clicked.connect(self.viewStdoutClicked)
+        self.ui.viewStderrBtn.clicked.connect(self.viewStderrClicked)
         
         _idangr_avalregs = sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[0])
         
         for reg in _idangr_avalregs:
             self.ui.registerChooser.addItem(reg)
         
+        self.ui.registerChooser.setCurrentIndex(-1)
         self.ui.registerChooser.currentIndexChanged.connect(self.addReg)
         
         tablemodel = IDAngrTableModel(_idangr_simregs, ['Name', 'Size', 'Value'], self.parent)

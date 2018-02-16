@@ -12,7 +12,7 @@ from claripy.ast.bv import BV
 _ffi = cffi.FFI()
 
 import logging
-l = logging.getLogger("idaheap")
+l = logging.getLogger("idangr.mem.page")
 
 from angr.storage import paged_memory
 import claripy

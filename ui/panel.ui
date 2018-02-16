@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1547</width>
+    <width>1544</width>
     <height>1050</height>
    </rect>
   </property>
@@ -20,126 +20,23 @@
    <enum>Qt::LeftToRight</enum>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <item row="0" column="0">
-    <widget class="QWidget" name="widget" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>61</height>
-      </size>
-     </property>
-     <widget class="QPushButton" name="resetBtn">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>121</width>
-        <height>45</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>RESET</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="runBtn">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>140</x>
-        <y>10</y>
-        <width>121</width>
-        <height>45</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>RUN</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="todbgBtn">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>270</x>
-        <y>10</y>
-        <width>121</width>
-        <height>45</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>TO DBG</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="stdinBox">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>530</x>
-        <y>10</y>
-        <width>211</width>
-        <height>38</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Symbolic stdin</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="viewStdinBtn">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>730</x>
-        <y>10</y>
-        <width>161</width>
-        <height>45</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>View Stdin</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
    <item row="2" column="0">
     <layout class="QGridLayout" name="gridLayout_5">
      <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout">
-       <property name="horizontalSpacing">
+       <property name="spacing">
         <number>12</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>16</number>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label_2">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>41</height>
+          </size>
+         </property>
          <property name="text">
           <string>   Symbolic memory</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="hexMemBox">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>HEX</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -178,6 +75,12 @@
        </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>41</height>
+          </size>
+         </property>
          <property name="text">
           <string>   Symbolic registers</string>
          </property>
@@ -242,6 +145,115 @@
         </widget>
        </item>
       </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QWidget" name="widget" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>61</height>
+      </size>
+     </property>
+     <widget class="QPushButton" name="resetBtn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>RESET</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="runBtn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>RUN</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="todbgBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TO DBG</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="viewStdinBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>470</x>
+        <y>10</y>
+        <width>161</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>View Stdin</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="viewStdoutBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>10</y>
+        <width>161</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>View Stdout</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="viewStderrBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>810</x>
+        <y>10</y>
+        <width>161</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>View Stderr</string>
+      </property>
      </widget>
     </widget>
    </item>

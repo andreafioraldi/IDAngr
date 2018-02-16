@@ -3,7 +3,7 @@ from collections import defaultdict
 import logging
 import itertools
 
-l = logging.getLogger("idaheap")
+l = logging.getLogger("idangr.mem.memory")
 
 import claripy
 from angr.storage.memory import SimMemory
