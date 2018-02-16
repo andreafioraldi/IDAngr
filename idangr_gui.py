@@ -93,6 +93,13 @@ class IDAngrPanelForm(PluginForm):
             model = self.ui.findView.model()
             for i in self.ui.findView.selectedIndexes():
                 model.removeRow(i.row())
+        def jumpto():
+            global _idangr_find
+            model = self.ui.findView.model()
+            sel = self.ui.findView.selectedIndexes()
+            if len(sel) > 0:
+                idc.jumpto(_idangr_find[sel[0].row()])
+        m.addAction('Jump to', jumpto)
         m.addAction('Delete', delete)
         m.exec_(self.ui.findView.viewport().mapToGlobal(point))
     
@@ -102,6 +109,13 @@ class IDAngrPanelForm(PluginForm):
             model = self.ui.avoidView.model()
             for i in self.ui.avoidView.selectedIndexes():
                 model.removeRow(i.row())
+        def jumpto():
+            global _idangr_avoid
+            model = self.ui.avoidView.model()
+            sel = self.ui.avoidView.selectedIndexes()
+            if len(sel) > 0:
+                idc.jumpto(_idangr_avoid[sel[0].row()])
+        m.addAction('Jump to', jumpto)
         m.addAction('Delete', delete)
         m.exec_(self.ui.avoidView.viewport().mapToGlobal(point))
 
@@ -159,13 +173,13 @@ class IDAngrPanelForm(PluginForm):
         conc = _idangr_stateman.concretize(_idangr_foundstate)
         for i in xrange(len(_idangr_simregs)):
             try:
-                _idangr_simregs[i][2] = conc[_idangr_simregs[i][0]]
+                _idangr_simregs[i][2] = "0x%x" % conc[_idangr_simregs[i][0]]
             except: pass
         for i in xrange(len(_idangr_simmem)):
             try:
-                _idangr_simmem[i][2] = conc[int(_idangr_simmem[i][0], 16)]
+                _idangr_simmem[i][2] = repr(conc[int(_idangr_simmem[i][0], 16)])
             except: pass
-        print _idangr_simmem
+        #print _idangr_simmem
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.todbgBtn.setEnabled(True)
@@ -183,6 +197,26 @@ class IDAngrPanelForm(PluginForm):
             for i in self.ui.regsView.selectedIndexes():
                 _idangr_simregs.pop(i.row())
             self.ui.regsView.model().layoutChanged.emit()
+        def jumpto():
+            global _idangr_simregs
+            model = self.ui.regsView.model()
+            sel = self.ui.regsView.selectedIndexes()
+            if len(sel) > 0:
+                try:
+                    addr = int(_idangr_simregs[sel[0].row()][2], 16)
+                    idc.jumpto(addr)
+                except:
+                    pass
+        def copyval():
+            global _idangr_simregs
+            model = self.ui.regsView.model()
+            sel = self.ui.regsView.selectedIndexes()
+            if len(sel) > 0:
+                cb = QtWidgets.QApplication.clipboard()
+                cb.clear(mode=cb.Clipboard)
+                cb.setText(_idangr_simregs[sel[0].row()][2], mode=cb.Clipboard)      
+        m.addAction('Jump to', jumpto)
+        m.addAction('Copy value', copyval)
         m.addAction('Delete', delete)
         m.exec_(self.ui.regsView.viewport().mapToGlobal(point))
 
@@ -193,6 +227,22 @@ class IDAngrPanelForm(PluginForm):
             for i in self.ui.memoryView.selectedIndexes():
                 _idangr_simmem.pop(i.row())
             self.ui.memoryView.model().layoutChanged.emit()
+        def jumpto():
+            global _idangr_simmem
+            model = self.ui.memoryView.model()
+            sel = self.ui.memoryView.selectedIndexes()
+            if len(sel) > 0:
+                idc.jumpto(int(_idangr_simmem[sel[0].row()][0], 16))
+        def copyval():
+            global _idangr_simmem
+            model = self.ui.memoryView.model()
+            sel = self.ui.memoryView.selectedIndexes()
+            if len(sel) > 0:
+                cb = QtWidgets.QApplication.clipboard()
+                cb.clear(mode=cb.Clipboard)
+                cb.setText(_idangr_simmem[sel[0].row()][2], mode=cb.Clipboard)           
+        m.addAction('Jump to', jumpto)
+        m.addAction('Copy value', copyval)
         m.addAction('Delete', delete)
         m.exec_(self.ui.memoryView.viewport().mapToGlobal(point))
 
