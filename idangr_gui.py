@@ -9,6 +9,9 @@ import sip
 
 _idangr_find = []
 _idangr_avoid = []
+#TODO
+_idangr_find_lambda = "def find_cond(state):\n\tfor addr in finds:\n\t\tif state.regs.pc == addr: return True\n\treturn False"
+_idangr_avoid_lambda = "def avoid_cond(state):\n\tfor addr in avoids:\n\t\tif state.regs.pc == addr: return True\n\treturn False"
 #_idangr_symset = SimbolicsSet()
 
 _idangr_avalregs = []
@@ -86,7 +89,63 @@ class IDAngrAddMemDialog(QtWidgets.QDialog):
             return (addr, length)
         return None
             
+class IDAngrExecDialog(QtWidgets.QDialog):
+    
+    def __init__(self):
+        global _idangr_find_lambda, _idangr_avoid_lambda
+        QtWidgets.QDialog.__init__(self)
         
+        self.ui = Ui_IDAngrExecDialog()
+        self.ui.setupUi(self)
+        
+        if _idangr_find_lambda:
+            self.ui.findCondEdit.setPlainText(_idangr_find_lambda)
+        if _idangr_avoid_lambda:
+            self.ui.avoidCondEdit.setPlainText(_idangr_avoid_lambda)
+    
+    @staticmethod
+    def go():
+        global _idangr_find, _idangr_find_lambda, _idangr_avoid, _idangr_avoid_lambda
+        dialog = IDAngrExecDialog()
+        r = dialog.exec_()
+        if r == QtWidgets.QDialog.Accepted:
+            if dialog.ui.useFindCondBox.isChecked():
+                code = dialog.ui.findCondEdit.toPlainText()
+                _idangr_find_lambda = code
+                finds = _idangr_find
+                avoids = _idangr_avoid
+                try:
+                    exec(code) in locals()
+                except Exception as ee:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Find Condition - Python Error', str(ee)).exec_()
+                    return None
+                try:
+                    find = find_cond
+                except:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "find_cond not defined").exec_()
+                    return None
+            else:
+                find = _idangr_find
+            if dialog.ui.useAvoidCondBox.isChecked():
+                code = dialog.ui.avoidCondEdit.toPlainText()
+                _idangr_avoid_lambda = code
+                finds = _idangr_find
+                avoids = _idangr_avoid
+                try:
+                    exec(code) in locals()
+                except Exception as ee:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Avoid Condition - Python Error', str(ee)).exec_()
+                    return None
+                try:
+                    avoid = avoid_cond
+                except:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "avoid_cond not defined").exec_()
+                    return None
+            else:
+                avoid = _idangr_avoid
+            return (find, avoid)
+        return None
+            
 
 class IDAngrTableModel(QtCore.QAbstractTableModel):
 
@@ -190,7 +249,12 @@ class IDAngrPanelForm(PluginForm):
         
     
     def runClicked(self):
-        global _idangr_stateman, _idangr_find, _idangr_avoid, _idangr_simregs, _idangr_simmem, _idangr_foundstate
+        global _idangr_stateman, _idangr_simregs, _idangr_simmem, _idangr_foundstate
+
+        conds = IDAngrExecDialog.go()
+        if conds == None:
+            return
+        
         #TODO check if debugger is running
         _idangr_stateman = StateManager()
         for e in _idangr_simregs:
@@ -198,7 +262,8 @@ class IDAngrPanelForm(PluginForm):
         for e in _idangr_simmem:
             _idangr_stateman.sim(int(e[0], 16), int(e[1]))
         sm = _idangr_stateman.simulation_manager()
-        sm.explore(find=_idangr_find, avoid=_idangr_avoid)
+        
+        sm.explore(find=conds[0], avoid=conds[1])
         if len(sm.found) == 0:
             QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(_idangr_stateman) + "\n").exec_()
             return

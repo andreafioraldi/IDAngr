@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1251</width>
-    <height>1013</height>
+    <width>998</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,19 +19,19 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QCheckBox" name="useFindCondBox">
          <property name="text">
-          <string>use find condition and not find addresses list</string>
+          <string>use find condition and not find addresses list (do not overwrite function name)</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
         <widget class="QPlainTextEdit" name="findCondEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -42,14 +42,14 @@
        <item row="0" column="0">
         <widget class="QCheckBox" name="useAvoidCondBox">
          <property name="text">
-          <string>use avoid condition and not avoid addresses list</string>
+          <string>use avoid condition and not avoid addresses list (do not overwrite function name)</string>
          </property>
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QPlainTextEdit" name="findAvoidCondEdit">
+        <widget class="QPlainTextEdit" name="avoidCondEdit">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -77,6 +77,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QCheckBox" name="verytestingBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>verytesting</string>
        </property>
