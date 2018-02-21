@@ -10,8 +10,8 @@ import sip
 _idangr_find = []
 _idangr_avoid = []
 #TODO
-_idangr_find_lambda = "def find_cond(state):\n\tfor addr in finds:\n\t\tif state.regs.pc == addr: return True\n\treturn False"
-_idangr_avoid_lambda = "def avoid_cond(state):\n\tfor addr in avoids:\n\t\tif state.regs.pc == addr: return True\n\treturn False"
+_idangr_find_lambda = "def find_cond(state):\n\tsol = state.solver.eval\n\tfor addr in finds:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
+_idangr_avoid_lambda = "def avoid_cond(state):\n\tsol = state.solver.eval\n\tfor addr in avoids:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
 #_idangr_symset = SimbolicsSet()
 
 _idangr_avalregs = []
