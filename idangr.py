@@ -9,7 +9,7 @@ print "########### IDAngr ###########"
 print "  usage: sm = StateManager()"
 print
 print " >> creating angr project..."
-project = angr.Project(idaapi.get_input_file_path(), load_options={"auto_load_libs":False})
+project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
 print " >> done."
 
 def StateShot():
