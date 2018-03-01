@@ -238,9 +238,7 @@ class IDAngrPanelForm(PluginForm):
         self.ui.findView.clear()
         self.ui.avoidView.clear()
         self.ui.todbgBtn.setEnabled(False)
-        self.ui.viewStdinBtn.setEnabled(False)
-        self.ui.viewStdoutBtn.setEnabled(False)
-        self.ui.viewStderrBtn.setEnabled(False)
+        self.ui.viewFileBtn.setEnabled(False)
         
     
     def runClicked(self):
@@ -275,12 +273,13 @@ class IDAngrPanelForm(PluginForm):
                 IDAngrCtx.simmem[i][2] = repr(conc[int(IDAngrCtx.simmem[i][0], 16)])
             except: pass
         #print IDAngrCtx.simmem
+        
+        self.ui.filesBox.setRange(0, len(IDAngrCtx.foundstate.posix.files) -1)
+        
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.todbgBtn.setEnabled(True)
-        self.ui.viewStdinBtn.setEnabled(True)
-        self.ui.viewStdoutBtn.setEnabled(True)
-        self.ui.viewStderrBtn.setEnabled(True)
+        self.ui.viewFileBtn.setEnabled(True)
     
     
     def nextClicked(self):
@@ -322,12 +321,12 @@ class IDAngrPanelForm(PluginForm):
                 IDAngrCtx.simmem[i][2] = repr(conc[int(IDAngrCtx.simmem[i][0], 16)])
             except: pass
         #print IDAngrCtx.simmem
+        self.ui.filesBox.setRange(0, len(IDAngrCtx.foundstate.posix.files) -1)
+        
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.todbgBtn.setEnabled(True)
-        self.ui.viewStdinBtn.setEnabled(True)
-        self.ui.viewStdoutBtn.setEnabled(True)
-        self.ui.viewStderrBtn.setEnabled(True)
+        self.ui.viewFileBtn.setEnabled(True)
         
     def todbgClicked(self):
         IDAngrCtx.stateman.to_dbg(IDAngrCtx.foundstate)
@@ -405,14 +404,10 @@ class IDAngrPanelForm(PluginForm):
     
     
     
-    def viewStdinClicked(self):
-        IDAngrTextViewerForm.showText(IDAngrCtx.foundstate.posix.dumps(0), "Stdin Viewer")
+    def viewFileClicked(self):
+        fd = self.ui.filesBox.value()
+        IDAngrTextViewerForm.showText(IDAngrCtx.foundstate.posix.dumps(fd), "File %d Viewer" % fd)
     
-    def viewStdoutClicked(self):
-        IDAngrTextViewerForm.showText(IDAngrCtx.foundstate.posix.dumps(1), "Stdout Viewer")
-        
-    def viewStderrClicked(self):
-        IDAngrTextViewerForm.showText(IDAngrCtx.foundstate.posix.dumps(2), "Stderr Viewer")
     
     def OnCreate(self, form):
         """
@@ -432,9 +427,7 @@ class IDAngrPanelForm(PluginForm):
         self.ui.resetBtn.clicked.connect(self.resetClicked)
         self.ui.runBtn.clicked.connect(self.runClicked)
         self.ui.todbgBtn.clicked.connect(self.todbgClicked)
-        self.ui.viewStdinBtn.clicked.connect(self.viewStdinClicked)
-        self.ui.viewStdoutBtn.clicked.connect(self.viewStdoutClicked)
-        self.ui.viewStderrBtn.clicked.connect(self.viewStderrClicked)
+        self.ui.viewFileBtn.clicked.connect(self.viewFileClicked)
         
         IDAngrCtx.regs = sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[0])
         

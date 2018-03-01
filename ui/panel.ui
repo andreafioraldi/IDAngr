@@ -207,52 +207,30 @@
        <string>TO DBG</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="viewStdinBtn">
+     <widget class="QPushButton" name="viewFileBtn">
       <property name="enabled">
        <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
-        <x>470</x>
+        <x>560</x>
         <y>10</y>
-        <width>161</width>
+        <width>201</width>
         <height>45</height>
        </rect>
       </property>
       <property name="text">
-       <string>View Stdin</string>
+       <string>View File Dump</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="viewStdoutBtn">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
+     <widget class="QSpinBox" name="filesBox">
       <property name="geometry">
        <rect>
-        <x>640</x>
+        <x>450</x>
         <y>10</y>
-        <width>161</width>
-        <height>45</height>
+        <width>96</width>
+        <height>43</height>
        </rect>
-      </property>
-      <property name="text">
-       <string>View Stdout</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="viewStderrBtn">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>810</x>
-        <y>10</y>
-        <width>161</width>
-        <height>45</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>View Stderr</string>
       </property>
      </widget>
     </widget>
