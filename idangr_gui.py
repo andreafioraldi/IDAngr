@@ -239,6 +239,7 @@ class IDAngrPanelForm(PluginForm):
         self.ui.avoidView.clear()
         self.ui.todbgBtn.setEnabled(False)
         self.ui.viewFileBtn.setEnabled(False)
+        self.ui.nextBtn.setEnabled(False)
         
     
     def runClicked(self):
@@ -280,6 +281,7 @@ class IDAngrPanelForm(PluginForm):
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.todbgBtn.setEnabled(True)
         self.ui.viewFileBtn.setEnabled(True)
+        self.ui.nextBtn.setEnabled(True)
     
     
     def nextClicked(self):
@@ -325,9 +327,8 @@ class IDAngrPanelForm(PluginForm):
         
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
-        self.ui.todbgBtn.setEnabled(True)
-        self.ui.viewFileBtn.setEnabled(True)
         
+    
     def todbgClicked(self):
         IDAngrCtx.stateman.to_dbg(IDAngrCtx.foundstate)
     
@@ -426,6 +427,7 @@ class IDAngrPanelForm(PluginForm):
 
         self.ui.resetBtn.clicked.connect(self.resetClicked)
         self.ui.runBtn.clicked.connect(self.runClicked)
+        self.ui.nextBtn.clicked.connect(self.nextClicked)
         self.ui.todbgBtn.clicked.connect(self.todbgClicked)
         self.ui.viewFileBtn.clicked.connect(self.viewFileClicked)
         

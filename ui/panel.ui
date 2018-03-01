@@ -197,7 +197,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>270</x>
+        <x>400</x>
         <y>10</y>
         <width>121</width>
         <height>45</height>
@@ -213,7 +213,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>560</x>
+        <x>700</x>
         <y>10</y>
         <width>201</width>
         <height>45</height>
@@ -226,11 +226,27 @@
      <widget class="QSpinBox" name="filesBox">
       <property name="geometry">
        <rect>
-        <x>450</x>
+        <x>590</x>
         <y>10</y>
         <width>96</width>
         <height>43</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="nextBtn">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>NEXT</string>
       </property>
      </widget>
     </widget>
