@@ -312,7 +312,7 @@ class IDAngrPanelForm(PluginForm):
         if len(sm.found) == 0:
             QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(IDAngrCtx.stateman) + "\n").exec_()
             return
-        IDAngrCtx.foundstate = sm.found[0]
+        IDAngrCtx.foundstate = sm.found[-1]
         conc = IDAngrCtx.stateman.concretize(IDAngrCtx.foundstate)
         for i in xrange(len(IDAngrCtx.simregs)):
             try:
