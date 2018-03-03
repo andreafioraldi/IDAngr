@@ -98,6 +98,9 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             self.ui.findCondEdit.setPlainText(IDAngrCtx.find_lambda)
         if IDAngrCtx.avoid_lambda:
             self.ui.avoidCondEdit.setPlainText(IDAngrCtx.avoid_lambda)
+        
+        self.fh = PythonHighlighter(self.ui.findCondEdit.document())
+        self.ah = PythonHighlighter(self.ui.avoidCondEdit.document())
     
     @staticmethod
     def go():
