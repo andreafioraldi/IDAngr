@@ -3,13 +3,23 @@ import angr
 import idaapi
 import idc
 import claripy
+import cle
 
 print
 print "########### IDAngr ###########"
 print "  usage: sm = StateManager()"
 print
 print " >> creating angr project..."
-project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
+
+USE_IDA_LOADER=0
+
+if USE_IDA_LOADER == 1:
+    from loader import idadbg
+    _idangr_loader = cle.Loader(idaapi.get_input_file_path(), auto_load_libs=False, main_opts={"backend": "idadbg", 'custom_base_addr': idaapi.get_imagebase()})
+    project = angr.Project(_idangr_loader)
+else:
+    project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
+
 print " >> done."
 
 def StateShot():
@@ -24,15 +34,16 @@ def StateShot():
             continue
         try:
             setattr(state.regs, reg, idc.GetRegValue(reg))
-            #print reg, hex(idc.GetRegValue(reg))
         except:
-            #print "fail to set register", reg
             pass
     
     return state
 
 
 class SimbolicsSet(object):
+    '''
+    for future use
+    '''
     def __init__(self):
         self.symbolics = {}
     
