@@ -58,7 +58,7 @@ class IDAngrAddMemDialog(QtWidgets.QDialog):
         self.ui = Ui_IDAngrAddMem()
         self.ui.setupUi(self)
         
-        self.ui.lenTextEdit.setPlainText(str(project.arch.bits / 8))
+        self.ui.lenTextEdit.setPlainText(str(load_project().arch.bits / 8))
         
     def setAddr(self, addr):
         if type(addr) == int or type(addr) == long:
@@ -246,8 +246,6 @@ class IDAngrPanelForm(PluginForm):
         
     
     def runClicked(self):
-        global project
-        
         conds = IDAngrExecDialog.go()
         if conds == None:
             return
@@ -288,8 +286,6 @@ class IDAngrPanelForm(PluginForm):
     
     
     def nextClicked(self):
-        global project
-        
         conds = IDAngrExecDialog.go()
         if conds == None:
             return
@@ -306,7 +302,7 @@ class IDAngrPanelForm(PluginForm):
             if IDAngrCtx.foundstate == None:
                 sm = IDAngrCtx.stateman.simulation_manager()
             else:
-                sm = project.factory.simulation_manager(IDAngrCtx.foundstate)
+                sm = load_project().factory.simulation_manager(IDAngrCtx.foundstate)
             IDAngrCtx.simman = sm
         else:
             sm = IDAngrCtx.simman
@@ -394,7 +390,7 @@ class IDAngrPanelForm(PluginForm):
         for row in IDAngrCtx.simregs: #don't add a reg twice
             if row[0] == reg:
                 return
-        IDAngrCtx.simregs.append([reg, project.arch.registers[reg][1], "?"])
+        IDAngrCtx.simregs.append([reg, load_project().arch.registers[reg][1], "?"])
         self.ui.regsView.model().layoutChanged.emit()
     
     def addMem(self, addr, size):
@@ -417,14 +413,14 @@ class IDAngrPanelForm(PluginForm):
         """
         Called when the plugin form is created
         """
-        global project
-        
         # Get parent widget
         self.parent = self.FormToPyQtWidget(form)
         
         self.ui = Ui_IDAngrPanel()
         self.ui.setupUi(self.parent)
-
+        
+        project = load_project()
+        
         self.ui.findView.customContextMenuRequested.connect(self.onFindCtxMenu)
         self.ui.avoidView.customContextMenuRequested.connect(self.onAvoidCtxMenu)
 

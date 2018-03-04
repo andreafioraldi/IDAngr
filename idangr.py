@@ -9,7 +9,15 @@ print
 print "########### IDAngr ###########"
 print "  usage: sm = StateManager()"
 print
-print " >> creating angr project..."
+
+def load_project():
+    global project
+    if project == None:
+        print " >> creating angr project..."
+        project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
+        print " >> done."
+    return project
+
 
 USE_IDA_LOADER=0
 
@@ -18,13 +26,15 @@ if USE_IDA_LOADER == 1:
     _idangr_loader = cle.Loader(idaapi.get_input_file_path(), auto_load_libs=False, main_opts={"backend": "idadbg", 'custom_base_addr': idaapi.get_imagebase()})
     project = angr.Project(_idangr_loader)
 else:
-    project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
+    project = None
 
-print " >> done."
+
 
 def StateShot():
     global project
     idc.RefreshDebuggerMemory()
+    
+    load_project()
     
     mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
     state = project.factory.blank_state(plugins={"memory": mem})
