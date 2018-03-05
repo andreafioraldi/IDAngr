@@ -29,7 +29,7 @@ IDAngr adds a panel with a self explanatory interface.
 
 You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
 
-![ais_gif](/images/ais3_crackme.gif)
+See this [gif](/images/ais3_crackme.gif)
 
 ## Api
 
