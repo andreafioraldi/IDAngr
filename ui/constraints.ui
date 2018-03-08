@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>IDAngrConstraintsDialog</class>
+ <widget class="QDialog" name="IDAngrConstraintsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Edit Constraints</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QPlainTextEdit" name="findCondEdit">
+    <widget class="QPlainTextEdit" name="constrEdit">
      <property name="enabled">
       <bool>true</bool>
      </property>
@@ -44,7 +44,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>IDAngrConstraintsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -60,7 +60,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
+   <receiver>IDAngrConstraintsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

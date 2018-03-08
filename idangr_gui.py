@@ -15,6 +15,7 @@ class IDAngrCtx(object):
     regs = []
     simregs = []
     simmem = []
+    constraints = {} #{ item: (code string, lambda) }
     stateman = None
     foundstate = None
     simman = None
@@ -85,7 +86,43 @@ class IDAngrAddMemDialog(QtWidgets.QDialog):
                 return None
             return (addr, length)
         return None
-            
+
+
+class IDAngrConstraintsDialog(QtWidgets.QDialog):
+    
+    def __init__(self, item, text=""):
+        QtWidgets.QDialog.__init__(self)
+        
+        self.ui = Ui_IDAngrConstraintsDialog()
+        self.ui.setupUi(self)
+        
+        if type(item) in (int, long):
+            item = hex(item)
+        
+        self.ui.constrEdit.setPlainText(text)
+        self.setWindowTitle("Edit Constraints - " + str(item))
+        self.h = PythonHighlighter(self.ui.constrEdit.document())
+    
+    @staticmethod
+    def go(item):
+        if item in IDAngrCtx.constraints:
+            dialog = IDAngrConstraintsDialog(item, IDAngrCtx.constraints[item][0])
+        else:
+            dialog = IDAngrConstraintsDialog(item, "# add your constraints to the var 'sym'\n")
+        
+        r = dialog.exec_()
+        if r == QtWidgets.QDialog.Accepted:
+            code = dialog.ui.constrEdit.toPlainText()
+            func = "def constr_func(sym):\n"
+            for line in code.split("\n"):
+                func += "\t" + line + "\n"
+            try:
+                exec(func) in globals()
+            except Exception as ee:
+                QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints Code - Python Error', str(ee)).exec_()
+            IDAngrCtx.constraints[item] = (code, constr_func)
+        
+    
 class IDAngrExecDialog(QtWidgets.QDialog):
     
     def __init__(self):
@@ -254,8 +291,21 @@ class IDAngrPanelForm(PluginForm):
         IDAngrCtx.stateman = StateManager()
         for e in IDAngrCtx.simregs:
             IDAngrCtx.stateman.sim(e[0])
+            if e[0] in IDAngrCtx.constraints:
+                try:
+                    IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]])
+                except Exception as ee:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
+                    return
         for e in IDAngrCtx.simmem:
-            IDAngrCtx.stateman.sim(int(e[0], 16), int(e[1]))
+            addr = int(e[0], 16)
+            IDAngrCtx.stateman.sim(addr, int(e[1]))
+            if addr in IDAngrCtx.constraints:
+                try:
+                    IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)])
+                except Exception as ee:
+                    QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
+                    return
         
         sm = IDAngrCtx.stateman.simulation_manager()
         IDAngrCtx.simman = sm
@@ -295,8 +345,21 @@ class IDAngrPanelForm(PluginForm):
             IDAngrCtx.stateman = StateManager()
             for e in IDAngrCtx.simregs:
                 IDAngrCtx.stateman.sim(e[0])
+                if e[0] in IDAngrCtx.constraints:
+                    try:
+                        IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]])
+                    except Exception as ee:
+                        QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
+                        return
             for e in IDAngrCtx.simmem:
-                IDAngrCtx.stateman.sim(int(e[0], 16), int(e[1]))
+                addr = int(e[0], 16)
+                IDAngrCtx.stateman.sim(addr, int(e[1]))
+                if addr in IDAngrCtx.constraints:
+                    try:
+                        IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)])
+                    except Exception as ee:
+                        QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
+                        return
         
         if IDAngrCtx.simman == None:
             if IDAngrCtx.foundstate == None:
@@ -354,9 +417,16 @@ class IDAngrPanelForm(PluginForm):
             if len(sel) > 0:
                 cb = QtWidgets.QApplication.clipboard()
                 cb.clear(mode=cb.Clipboard)
-                cb.setText(IDAngrCtx.simregs[sel[0].row()][2], mode=cb.Clipboard)      
+                cb.setText(IDAngrCtx.simregs[sel[0].row()][2], mode=cb.Clipboard)
+        def set_constr():
+            model = self.ui.regsView.model()
+            sel = self.ui.regsView.selectedIndexes()
+            if len(sel) > 0:
+                item = IDAngrCtx.simregs[sel[0].row()][0]
+                IDAngrConstraintsDialog.go(item)    
         m.addAction('Jump to', jumpto)
         m.addAction('Copy value', copyval)
+        m.addAction('Set constraints', set_constr)
         m.addAction('Delete', delete)
         m.exec_(self.ui.regsView.viewport().mapToGlobal(point))
 
@@ -378,9 +448,16 @@ class IDAngrPanelForm(PluginForm):
             if len(sel) > 0:
                 cb = QtWidgets.QApplication.clipboard()
                 cb.clear(mode=cb.Clipboard)
-                cb.setText(IDAngrCtx.simmem[sel[0].row()][2], mode=cb.Clipboard)           
+                cb.setText(IDAngrCtx.simmem[sel[0].row()][2], mode=cb.Clipboard)
+        def set_constr():
+            model = self.ui.memoryView.model()
+            sel = self.ui.memoryView.selectedIndexes()
+            if len(sel) > 0:
+                item = int(IDAngrCtx.simmem[sel[0].row()][0], 16)
+                IDAngrConstraintsDialog.go(item)
         m.addAction('Jump to', jumpto)
         m.addAction('Copy value', copyval)
+        m.addAction('Set constraints', set_constr)
         m.addAction('Delete', delete)
         m.exec_(self.ui.memoryView.viewport().mapToGlobal(point))
 
