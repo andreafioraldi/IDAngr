@@ -104,7 +104,11 @@ class IdaPage(paged_memory.BasePage):
     def _copy_args(self):
         return { 'storage': list(self._storage), 'sinkhole': self._sinkhole }
 
-
+    def copy(self):
+        c = IdaPage(self._page_addr, self._page_size, permissions=self.permissions, **self._copy_args())
+        if hasattr(self, "from_ida_dbg"):
+            setattr(c, "from_ida_dbg", True)
+        return c
 
 
 

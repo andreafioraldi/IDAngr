@@ -108,12 +108,12 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
         if item in IDAngrCtx.constraints:
             dialog = IDAngrConstraintsDialog(item, IDAngrCtx.constraints[item][0])
         else:
-            dialog = IDAngrConstraintsDialog(item, "# add your constraints to the var 'sym'\n")
+            dialog = IDAngrConstraintsDialog(item, "# add your constraints to the var 'sym' using the var 'state'\n")
         
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
             code = dialog.ui.constrEdit.toPlainText()
-            func = "def constr_func(sym):\n"
+            func = "def constr_func(sym, state):\n"
             for line in code.split("\n"):
                 func += "\t" + line + "\n"
             try:
@@ -293,7 +293,7 @@ class IDAngrPanelForm(PluginForm):
             IDAngrCtx.stateman.sim(e[0])
             if e[0] in IDAngrCtx.constraints:
                 try:
-                    IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]])
+                    IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]][0], IDAngrCtx.stateman.state)
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                     return
@@ -302,7 +302,7 @@ class IDAngrPanelForm(PluginForm):
             IDAngrCtx.stateman.sim(addr, int(e[1]))
             if addr in IDAngrCtx.constraints:
                 try:
-                    IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)])
+                    IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)][0], IDAngrCtx.stateman.state)
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                     return
@@ -347,7 +347,7 @@ class IDAngrPanelForm(PluginForm):
                 IDAngrCtx.stateman.sim(e[0])
                 if e[0] in IDAngrCtx.constraints:
                     try:
-                        IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]])
+                        IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]], IDAngrCtx.stateman.state)
                     except Exception as ee:
                         QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                         return
@@ -356,7 +356,7 @@ class IDAngrPanelForm(PluginForm):
                 IDAngrCtx.stateman.sim(addr, int(e[1]))
                 if addr in IDAngrCtx.constraints:
                     try:
-                        IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)])
+                        IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)], IDAngrCtx.stateman.state)
                     except Exception as ee:
                         QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                         return
