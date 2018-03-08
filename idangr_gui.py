@@ -333,6 +333,8 @@ class IDAngrPanelForm(PluginForm):
         self.ui.todbgBtn.setEnabled(True)
         self.ui.viewFileBtn.setEnabled(True)
         self.ui.nextBtn.setEnabled(True)
+        
+        QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Done', "Valid state found").exec_()
     
     
     def nextClicked(self):
@@ -390,6 +392,8 @@ class IDAngrPanelForm(PluginForm):
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         
+        QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, 'Done', "Valid state found").exec_()
+
     
     def todbgClicked(self):
         IDAngrCtx.stateman.to_dbg(IDAngrCtx.foundstate)
