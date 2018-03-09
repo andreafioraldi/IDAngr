@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1544</width>
-    <height>1050</height>
+    <height>1060</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -213,7 +213,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>700</x>
+        <x>690</x>
         <y>10</y>
         <width>201</width>
         <height>45</height>
@@ -226,7 +226,7 @@
      <widget class="QSpinBox" name="filesBox">
       <property name="geometry">
        <rect>
-        <x>590</x>
+        <x>580</x>
         <y>10</y>
         <width>96</width>
         <height>43</height>
@@ -247,6 +247,38 @@
       </property>
       <property name="text">
        <string>NEXT</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="loadBtn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>960</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>LOAD</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="saveBtn">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>1090</x>
+        <y>10</y>
+        <width>121</width>
+        <height>45</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>SAVE</string>
       </property>
      </widget>
     </widget>

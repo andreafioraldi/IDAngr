@@ -6,6 +6,7 @@ from ui import *
 from idangr import *
 
 import sip
+import pickle
 
 class IDAngrCtx(object):
     find = []
@@ -19,6 +20,19 @@ class IDAngrCtx(object):
     stateman = None
     foundstate = None
     simman = None
+
+_idangr_ctx = IDAngrCtx()
+
+def saveCtx(filename):
+    global _idangr_ctx
+    with open(filename, "w") as fh:
+        pickle.dump(_idangr_ctx, fh)
+
+def loadCtx(filename):
+    global _idangr_ctx
+    with open(filename, "r") as fh:
+        _idangr_ctx = pickle.load(fh)
+
 
 class IDAngrTextViewerForm(QtWidgets.QDialog):
     
@@ -105,8 +119,8 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
     
     @staticmethod
     def go(item):
-        if item in IDAngrCtx.constraints:
-            dialog = IDAngrConstraintsDialog(item, IDAngrCtx.constraints[item][0])
+        if item in _idangr_ctx.constraints:
+            dialog = IDAngrConstraintsDialog(item, _idangr_ctx.constraints[item][0])
         else:
             dialog = IDAngrConstraintsDialog(item, "# add your constraints to the var 'sym' using the var 'state'\n")
         
@@ -120,7 +134,7 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
                 exec(func) in globals()
             except Exception as ee:
                 QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints Code - Python Error', str(ee)).exec_()
-            IDAngrCtx.constraints[item] = (code, constr_func)
+            _idangr_ctx.constraints[item] = (code, constr_func)
         
     
 class IDAngrExecDialog(QtWidgets.QDialog):
@@ -131,10 +145,10 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         self.ui = Ui_IDAngrExecDialog()
         self.ui.setupUi(self)
         
-        if IDAngrCtx.find_lambda:
-            self.ui.findCondEdit.setPlainText(IDAngrCtx.find_lambda)
-        if IDAngrCtx.avoid_lambda:
-            self.ui.avoidCondEdit.setPlainText(IDAngrCtx.avoid_lambda)
+        if _idangr_ctx.find_lambda:
+            self.ui.findCondEdit.setPlainText(_idangr_ctx.find_lambda)
+        if _idangr_ctx.avoid_lambda:
+            self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
         
         self.fh = PythonHighlighter(self.ui.findCondEdit.document())
         self.ah = PythonHighlighter(self.ui.avoidCondEdit.document())
@@ -146,9 +160,9 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         if r == QtWidgets.QDialog.Accepted:
             if dialog.ui.useFindCondBox.isChecked():
                 code = dialog.ui.findCondEdit.toPlainText()
-                IDAngrCtx.find_lambda = code
-                finds = IDAngrCtx.find
-                avoids = IDAngrCtx.avoid
+                _idangr_ctx.find_lambda = code
+                finds = _idangr_ctx.find
+                avoids = _idangr_ctx.avoid
                 try:
                     exec(code) in locals()
                 except Exception as ee:
@@ -160,12 +174,12 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "find_cond not defined").exec_()
                     return None
             else:
-                find = IDAngrCtx.find
+                find = _idangr_ctx.find
             if dialog.ui.useAvoidCondBox.isChecked():
                 code = dialog.ui.avoidCondEdit.toPlainText()
-                IDAngrCtx.avoid_lambda = code
-                finds = IDAngrCtx.find
-                avoids = IDAngrCtx.avoid
+                _idangr_ctx.avoid_lambda = code
+                finds = _idangr_ctx.find
+                avoids = _idangr_ctx.avoid
                 try:
                     exec(code) in locals()
                 except Exception as ee:
@@ -177,7 +191,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "avoid_cond not defined").exec_()
                     return None
             else:
-                avoid = IDAngrCtx.avoid
+                avoid = _idangr_ctx.avoid
             return (find, avoid)
         return None
             
@@ -222,7 +236,7 @@ class IDAngrPanelForm(PluginForm):
             model = self.ui.findView.model()
             sel = self.ui.findView.selectedIndexes()
             if len(sel) > 0:
-                idc.jumpto(IDAngrCtx.find[sel[0].row()])
+                idc.jumpto(_idangr_ctx.find[sel[0].row()])
         m.addAction('Jump to', jumpto)
         m.addAction('Delete', delete)
         m.exec_(self.ui.findView.viewport().mapToGlobal(point))
@@ -237,7 +251,7 @@ class IDAngrPanelForm(PluginForm):
             model = self.ui.avoidView.model()
             sel = self.ui.avoidView.selectedIndexes()
             if len(sel) > 0:
-                idc.jumpto(IDAngrCtx.avoid[sel[0].row()])
+                idc.jumpto(_idangr_ctx.avoid[sel[0].row()])
         m.addAction('Jump to', jumpto)
         m.addAction('Delete', delete)
         m.exec_(self.ui.avoidView.viewport().mapToGlobal(point))
@@ -264,15 +278,15 @@ class IDAngrPanelForm(PluginForm):
     
     
     def resetClicked(self):
-        while len(IDAngrCtx.simregs) > 0:
-            IDAngrCtx.simregs.pop()
-        while len(IDAngrCtx.simmem) > 0:
-            IDAngrCtx.simmem.pop()
-        IDAngrCtx.find = []
-        IDAngrCtx.avoid = []
-        IDAngrCtx.stateman = None
-        IDAngrCtx.simman = None
-        IDAngrCtx.foundstate = None
+        while len(_idangr_ctx.simregs) > 0:
+            _idangr_ctx.simregs.pop()
+        while len(_idangr_ctx.simmem) > 0:
+            _idangr_ctx.simmem.pop()
+        _idangr_ctx.find = []
+        _idangr_ctx.avoid = []
+        _idangr_ctx.stateman = None
+        _idangr_ctx.simman = None
+        _idangr_ctx.foundstate = None
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
         self.ui.findView.clear()
@@ -288,45 +302,45 @@ class IDAngrPanelForm(PluginForm):
             return
         
         #TODO check if debugger is running
-        IDAngrCtx.stateman = StateManager()
-        for e in IDAngrCtx.simregs:
-            IDAngrCtx.stateman.sim(e[0])
-            if e[0] in IDAngrCtx.constraints:
+        _idangr_ctx.stateman = StateManager()
+        for e in _idangr_ctx.simregs:
+            _idangr_ctx.stateman.sim(e[0])
+            if e[0] in _idangr_ctx.constraints:
                 try:
-                    IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]][0], IDAngrCtx.stateman.state)
+                    _idangr_ctx.constraints[e[0]][1](_idangr_ctx.stateman.symbolics[e[0]][0], _idangr_ctx.stateman.state)
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                     return
-        for e in IDAngrCtx.simmem:
+        for e in _idangr_ctx.simmem:
             addr = int(e[0], 16)
-            IDAngrCtx.stateman.sim(addr, int(e[1]))
-            if addr in IDAngrCtx.constraints:
+            _idangr_ctx.stateman.sim(addr, int(e[1]))
+            if addr in _idangr_ctx.constraints:
                 try:
-                    IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)][0], IDAngrCtx.stateman.state)
+                    _idangr_ctx.constraints[addr][1](_idangr_ctx.stateman.symbolics[int(e[0], 16)][0], _idangr_ctx.stateman.state)
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                     return
         
-        sm = IDAngrCtx.stateman.simulation_manager()
-        IDAngrCtx.simman = sm
+        sm = _idangr_ctx.stateman.simulation_manager()
+        _idangr_ctx.simman = sm
         
         sm.explore(find=conds[0], avoid=conds[1])
         if len(sm.found) == 0:
-            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(IDAngrCtx.stateman) + "\n").exec_()
+            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(_idangr_ctx.stateman) + "\n").exec_()
             return
-        IDAngrCtx.foundstate = sm.found[0]
-        conc = IDAngrCtx.stateman.concretize(IDAngrCtx.foundstate)
-        for i in xrange(len(IDAngrCtx.simregs)):
+        _idangr_ctx.foundstate = sm.found[0]
+        conc = _idangr_ctx.stateman.concretize(_idangr_ctx.foundstate)
+        for i in xrange(len(_idangr_ctx.simregs)):
             try:
-                IDAngrCtx.simregs[i][2] = "0x%x" % conc[IDAngrCtx.simregs[i][0]]
+                _idangr_ctx.simregs[i][2] = "0x%x" % conc[_idangr_ctx.simregs[i][0]]
             except: pass
-        for i in xrange(len(IDAngrCtx.simmem)):
+        for i in xrange(len(_idangr_ctx.simmem)):
             try:
-                IDAngrCtx.simmem[i][2] = repr(conc[int(IDAngrCtx.simmem[i][0], 16)])
+                _idangr_ctx.simmem[i][2] = repr(conc[int(_idangr_ctx.simmem[i][0], 16)])
             except: pass
-        #print IDAngrCtx.simmem
+        #print _idangr_ctx.simmem
         
-        self.ui.filesBox.setRange(0, len(IDAngrCtx.foundstate.posix.files) -1)
+        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.files) -1)
         
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
@@ -343,51 +357,51 @@ class IDAngrPanelForm(PluginForm):
             return
         
         #TODO check if debugger is running
-        if IDAngrCtx.stateman == None:
-            IDAngrCtx.stateman = StateManager()
-            for e in IDAngrCtx.simregs:
-                IDAngrCtx.stateman.sim(e[0])
-                if e[0] in IDAngrCtx.constraints:
+        if _idangr_ctx.stateman == None:
+            _idangr_ctx.stateman = StateManager()
+            for e in _idangr_ctx.simregs:
+                _idangr_ctx.stateman.sim(e[0])
+                if e[0] in _idangr_ctx.constraints:
                     try:
-                        IDAngrCtx.constraints[e[0]][1](IDAngrCtx.stateman.symbolics[e[0]], IDAngrCtx.stateman.state)
+                        _idangr_ctx.constraints[e[0]][1](_idangr_ctx.stateman.symbolics[e[0]], _idangr_ctx.stateman.state)
                     except Exception as ee:
                         QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                         return
-            for e in IDAngrCtx.simmem:
+            for e in _idangr_ctx.simmem:
                 addr = int(e[0], 16)
-                IDAngrCtx.stateman.sim(addr, int(e[1]))
-                if addr in IDAngrCtx.constraints:
+                _idangr_ctx.stateman.sim(addr, int(e[1]))
+                if addr in _idangr_ctx.constraints:
                     try:
-                        IDAngrCtx.constraints[addr][1](IDAngrCtx.stateman.symbolics[int(e[0], 16)], IDAngrCtx.stateman.state)
+                        _idangr_ctx.constraints[addr][1](_idangr_ctx.stateman.symbolics[int(e[0], 16)], _idangr_ctx.stateman.state)
                     except Exception as ee:
                         QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints on %s - Python Error' % str(e[0]), str(ee)).exec_()
                         return
         
-        if IDAngrCtx.simman == None:
-            if IDAngrCtx.foundstate == None:
-                sm = IDAngrCtx.stateman.simulation_manager()
+        if _idangr_ctx.simman == None:
+            if _idangr_ctx.foundstate == None:
+                sm = _idangr_ctx.stateman.simulation_manager()
             else:
-                sm = load_project().factory.simulation_manager(IDAngrCtx.foundstate)
-            IDAngrCtx.simman = sm
+                sm = load_project().factory.simulation_manager(_idangr_ctx.foundstate)
+            _idangr_ctx.simman = sm
         else:
-            sm = IDAngrCtx.simman
+            sm = _idangr_ctx.simman
         
         sm.explore(find=conds[0], avoid=conds[1])
         if len(sm.found) == 0:
-            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(IDAngrCtx.stateman) + "\n").exec_()
+            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Warning, 'Not Found', "Valid state not found after exploration.\n" + str(_idangr_ctx.stateman) + "\n").exec_()
             return
-        IDAngrCtx.foundstate = sm.found[-1]
-        conc = IDAngrCtx.stateman.concretize(IDAngrCtx.foundstate)
-        for i in xrange(len(IDAngrCtx.simregs)):
+        _idangr_ctx.foundstate = sm.found[-1]
+        conc = _idangr_ctx.stateman.concretize(_idangr_ctx.foundstate)
+        for i in xrange(len(_idangr_ctx.simregs)):
             try:
-                IDAngrCtx.simregs[i][2] = "0x%x" % conc[IDAngrCtx.simregs[i][0]]
+                _idangr_ctx.simregs[i][2] = "0x%x" % conc[_idangr_ctx.simregs[i][0]]
             except: pass
-        for i in xrange(len(IDAngrCtx.simmem)):
+        for i in xrange(len(_idangr_ctx.simmem)):
             try:
-                IDAngrCtx.simmem[i][2] = repr(conc[int(IDAngrCtx.simmem[i][0], 16)])
+                _idangr_ctx.simmem[i][2] = repr(conc[int(_idangr_ctx.simmem[i][0], 16)])
             except: pass
-        #print IDAngrCtx.simmem
-        self.ui.filesBox.setRange(0, len(IDAngrCtx.foundstate.posix.files) -1)
+        #print _idangr_ctx.simmem
+        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.files) -1)
         
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
@@ -396,7 +410,7 @@ class IDAngrPanelForm(PluginForm):
 
     
     def todbgClicked(self):
-        IDAngrCtx.stateman.to_dbg(IDAngrCtx.foundstate)
+        _idangr_ctx.stateman.to_dbg(_idangr_ctx.foundstate)
     
     
     def onRegsCtxMenu(self, point):
@@ -404,14 +418,14 @@ class IDAngrPanelForm(PluginForm):
         def delete():
             model = self.ui.regsView.model()
             for i in self.ui.regsView.selectedIndexes():
-                IDAngrCtx.simregs.pop(i.row())
+                _idangr_ctx.simregs.pop(i.row())
             self.ui.regsView.model().layoutChanged.emit()
         def jumpto():
             model = self.ui.regsView.model()
             sel = self.ui.regsView.selectedIndexes()
             if len(sel) > 0:
                 try:
-                    addr = int(IDAngrCtx.simregs[sel[0].row()][2], 16)
+                    addr = int(_idangr_ctx.simregs[sel[0].row()][2], 16)
                     idc.jumpto(addr)
                 except:
                     pass
@@ -421,12 +435,12 @@ class IDAngrPanelForm(PluginForm):
             if len(sel) > 0:
                 cb = QtWidgets.QApplication.clipboard()
                 cb.clear(mode=cb.Clipboard)
-                cb.setText(IDAngrCtx.simregs[sel[0].row()][2], mode=cb.Clipboard)
+                cb.setText(_idangr_ctx.simregs[sel[0].row()][2], mode=cb.Clipboard)
         def set_constr():
             model = self.ui.regsView.model()
             sel = self.ui.regsView.selectedIndexes()
             if len(sel) > 0:
-                item = IDAngrCtx.simregs[sel[0].row()][0]
+                item = _idangr_ctx.simregs[sel[0].row()][0]
                 IDAngrConstraintsDialog.go(item)    
         m.addAction('Jump to', jumpto)
         m.addAction('Copy value', copyval)
@@ -439,25 +453,25 @@ class IDAngrPanelForm(PluginForm):
         def delete():
             model = self.ui.memoryView.model()
             for i in self.ui.memoryView.selectedIndexes():
-                IDAngrCtx.simmem.pop(i.row())
+                _idangr_ctx.simmem.pop(i.row())
             self.ui.memoryView.model().layoutChanged.emit()
         def jumpto():
             model = self.ui.memoryView.model()
             sel = self.ui.memoryView.selectedIndexes()
             if len(sel) > 0:
-                idc.jumpto(int(IDAngrCtx.simmem[sel[0].row()][0], 16))
+                idc.jumpto(int(_idangr_ctx.simmem[sel[0].row()][0], 16))
         def copyval():
             model = self.ui.memoryView.model()
             sel = self.ui.memoryView.selectedIndexes()
             if len(sel) > 0:
                 cb = QtWidgets.QApplication.clipboard()
                 cb.clear(mode=cb.Clipboard)
-                cb.setText(IDAngrCtx.simmem[sel[0].row()][2], mode=cb.Clipboard)
+                cb.setText(_idangr_ctx.simmem[sel[0].row()][2], mode=cb.Clipboard)
         def set_constr():
             model = self.ui.memoryView.model()
             sel = self.ui.memoryView.selectedIndexes()
             if len(sel) > 0:
-                item = int(IDAngrCtx.simmem[sel[0].row()][0], 16)
+                item = int(_idangr_ctx.simmem[sel[0].row()][0], 16)
                 IDAngrConstraintsDialog.go(item)
         m.addAction('Jump to', jumpto)
         m.addAction('Copy value', copyval)
@@ -467,17 +481,17 @@ class IDAngrPanelForm(PluginForm):
 
     
     def addReg(self, idx):
-        reg = IDAngrCtx.regs[idx]
-        for row in IDAngrCtx.simregs: #don't add a reg twice
+        reg = _idangr_ctx.regs[idx]
+        for row in _idangr_ctx.simregs: #don't add a reg twice
             if row[0] == reg:
                 return
-        IDAngrCtx.simregs.append([reg, load_project().arch.registers[reg][1], "?"])
+        _idangr_ctx.simregs.append([reg, load_project().arch.registers[reg][1], "?"])
         self.ui.regsView.model().layoutChanged.emit()
     
     def addMem(self, addr, size):
         if type(addr) == int or type(addr) == long:
             addr = "0x%x" % addr
-        IDAngrCtx.simmem.append([addr, size, "?"])
+        _idangr_ctx.simmem.append([addr, size, "?"])
         self.ui.memoryView.model().layoutChanged.emit()
     
     def removeMem(self, addr):
@@ -487,7 +501,7 @@ class IDAngrPanelForm(PluginForm):
     
     def viewFileClicked(self):
         fd = self.ui.filesBox.value()
-        IDAngrTextViewerForm.showText(IDAngrCtx.foundstate.posix.dumps(fd), "File %d Viewer" % fd)
+        IDAngrTextViewerForm.showText(_idangr_ctx.foundstate.posix.dumps(fd), "File %d Viewer" % fd)
     
     
     def OnCreate(self, form):
@@ -511,19 +525,19 @@ class IDAngrPanelForm(PluginForm):
         self.ui.todbgBtn.clicked.connect(self.todbgClicked)
         self.ui.viewFileBtn.clicked.connect(self.viewFileClicked)
         
-        IDAngrCtx.regs = sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[0])
+        _idangr_ctx.regs = sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[0])
         
-        for reg in IDAngrCtx.regs:
+        for reg in _idangr_ctx.regs:
             self.ui.registerChooser.addItem(reg)
         
         self.ui.registerChooser.setCurrentIndex(-1)
         self.ui.registerChooser.currentIndexChanged.connect(self.addReg)
         
-        tablemodel = IDAngrTableModel(IDAngrCtx.simregs, ['Name', 'Size', 'Value'], self.parent)
+        tablemodel = IDAngrTableModel(_idangr_ctx.simregs, ['Name', 'Size', 'Value'], self.parent)
         self.ui.regsView.setModel(tablemodel)
         self.ui.regsView.resizeColumnsToContents()
         
-        tablemodel = IDAngrTableModel(IDAngrCtx.simmem, ['Address', 'Length', 'Value'], self.parent)
+        tablemodel = IDAngrTableModel(_idangr_ctx.simmem, ['Address', 'Length', 'Value'], self.parent)
         self.ui.memoryView.setModel(tablemodel)
         self.ui.memoryView.resizeColumnsToContents()
         
@@ -536,7 +550,7 @@ class IDAngrPanelForm(PluginForm):
         """
         Called when the plugin form is closed
         """
-        del IDAngrCtx.panel
+        del _idangr_ctx.panel
 
 
     def Show(self):
@@ -557,30 +571,30 @@ class IDAngrActionHandler(idaapi.action_handler_t):
     def activate(self, ctx):
         if self.action == "Find":
             addr = idaapi.get_screen_ea()
-            if addr in IDAngrCtx.avoid:
-                IDAngrCtx.avoid.remove(addr)
-                IDAngrCtx.panel.removeAvoid(addr)
-            if addr in IDAngrCtx.find:
+            if addr in _idangr_ctx.avoid:
+                _idangr_ctx.avoid.remove(addr)
+                _idangr_ctx.panel.removeAvoid(addr)
+            if addr in _idangr_ctx.find:
                 return
-            IDAngrCtx.find.append(addr)
-            IDAngrCtx.panel.addFind(addr)
+            _idangr_ctx.find.append(addr)
+            _idangr_ctx.panel.addFind(addr)
         elif self.action == "Avoid":
             addr = idaapi.get_screen_ea()
-            if addr in IDAngrCtx.find:
-                IDAngrCtx.find.remove(addr)
-                IDAngrCtx.panel.removeFind(addr)
-            if addr in IDAngrCtx.avoid:
+            if addr in _idangr_ctx.find:
+                _idangr_ctx.find.remove(addr)
+                _idangr_ctx.panel.removeFind(addr)
+            if addr in _idangr_ctx.avoid:
                 return
-            IDAngrCtx.avoid.append(addr)
-            IDAngrCtx.panel.addAvoid(addr)
+            _idangr_ctx.avoid.append(addr)
+            _idangr_ctx.panel.addAvoid(addr)
         elif self.action == "Symbolic":
             addr = idaapi.get_screen_ea()
-            #if addr in IDAngrCtx.simmem:
+            #if addr in _idangr_ctx.simmem:
             #    return
             m = IDAngrAddMemDialog.getMem(addr)
             if m != None:
-                IDAngrCtx.panel.addMem(m[0], m[1])
-                #IDAngrCtx.simmem.append(m)
+                _idangr_ctx.panel.addMem(m[0], m[1])
+                #_idangr_ctx.simmem.append(m)
         
         
     def update(self, ctx):
@@ -601,15 +615,15 @@ idaapi.register_action(idaapi.action_desc_t('Find', 'Find', IDAngrActionHandler(
 idaapi.register_action(idaapi.action_desc_t('Avoid', 'Avoid', IDAngrActionHandler("Avoid")))
 idaapi.register_action(idaapi.action_desc_t('Symbolic', 'Symbolic', IDAngrActionHandler("Symbolic")))
 
-IDAngrCtx.hooks = IDAngrHooks()
-IDAngrCtx.hooks.hook()
+_idangr_ctx.hooks = IDAngrHooks()
+_idangr_ctx.hooks.hook()
 
 '''
 try:
-    IDAngrCtx.panel
+    _idangr_ctx.panel
 except:
-    IDAngrCtx.panel = IDAngrPanelForm()'''
-IDAngrCtx.panel = IDAngrPanelForm()
-IDAngrCtx.panel.Show()
+    _idangr_ctx.panel = IDAngrPanelForm()'''
+_idangr_ctx.panel = IDAngrPanelForm()
+_idangr_ctx.panel.Show()
 
 
