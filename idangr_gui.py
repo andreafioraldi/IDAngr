@@ -119,6 +119,7 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
     
     @staticmethod
     def go(item):
+        global _idangr_ctx
         if item in _idangr_ctx.constraints:
             dialog = IDAngrConstraintsDialog(item, _idangr_ctx.constraints[item][0])
         else:
@@ -140,6 +141,7 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
 class IDAngrExecDialog(QtWidgets.QDialog):
     
     def __init__(self):
+        global _idangr_ctx
         QtWidgets.QDialog.__init__(self)
         
         self.ui = Ui_IDAngrExecDialog()
@@ -155,6 +157,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
     
     @staticmethod
     def go():
+        global _idangr_ctx
         dialog = IDAngrExecDialog()
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
@@ -233,6 +236,7 @@ class IDAngrPanelForm(PluginForm):
             for i in self.ui.findView.selectedIndexes():
                 model.removeRow(i.row())
         def jumpto():
+            global _idangr_ctx
             model = self.ui.findView.model()
             sel = self.ui.findView.selectedIndexes()
             if len(sel) > 0:
@@ -248,6 +252,7 @@ class IDAngrPanelForm(PluginForm):
             for i in self.ui.avoidView.selectedIndexes():
                 model.removeRow(i.row())
         def jumpto():
+            global _idangr_ctx
             model = self.ui.avoidView.model()
             sel = self.ui.avoidView.selectedIndexes()
             if len(sel) > 0:
@@ -278,6 +283,7 @@ class IDAngrPanelForm(PluginForm):
     
     
     def resetClicked(self):
+        global _idangr_ctx
         while len(_idangr_ctx.simregs) > 0:
             _idangr_ctx.simregs.pop()
         while len(_idangr_ctx.simmem) > 0:
@@ -297,6 +303,7 @@ class IDAngrPanelForm(PluginForm):
         
     
     def runClicked(self):
+        global _idangr_ctx
         conds = IDAngrExecDialog.go()
         if conds == None:
             return
@@ -352,6 +359,7 @@ class IDAngrPanelForm(PluginForm):
     
     
     def nextClicked(self):
+        global _idangr_ctx
         conds = IDAngrExecDialog.go()
         if conds == None:
             return
@@ -410,10 +418,12 @@ class IDAngrPanelForm(PluginForm):
 
     
     def todbgClicked(self):
+        global _idangr_ctx
         _idangr_ctx.stateman.to_dbg(_idangr_ctx.foundstate)
     
     
     def onRegsCtxMenu(self, point):
+        global _idangr_ctx
         m = QtWidgets.QMenu(self.ui.regsView)
         def delete():
             model = self.ui.regsView.model()
@@ -449,6 +459,7 @@ class IDAngrPanelForm(PluginForm):
         m.exec_(self.ui.regsView.viewport().mapToGlobal(point))
 
     def onMemCtxMenu(self, point):
+        global _idangr_ctx
         m = QtWidgets.QMenu(self.ui.memoryView)
         def delete():
             model = self.ui.memoryView.model()
@@ -481,6 +492,7 @@ class IDAngrPanelForm(PluginForm):
 
     
     def addReg(self, idx):
+        global _idangr_ctx
         reg = _idangr_ctx.regs[idx]
         for row in _idangr_ctx.simregs: #don't add a reg twice
             if row[0] == reg:
@@ -489,6 +501,7 @@ class IDAngrPanelForm(PluginForm):
         self.ui.regsView.model().layoutChanged.emit()
     
     def addMem(self, addr, size):
+        global _idangr_ctx
         if type(addr) == int or type(addr) == long:
             addr = "0x%x" % addr
         _idangr_ctx.simmem.append([addr, size, "?"])
@@ -500,6 +513,7 @@ class IDAngrPanelForm(PluginForm):
     
     
     def viewFileClicked(self):
+        global _idangr_ctx
         fd = self.ui.filesBox.value()
         IDAngrTextViewerForm.showText(_idangr_ctx.foundstate.posix.dumps(fd), "File %d Viewer" % fd)
     
@@ -508,6 +522,7 @@ class IDAngrPanelForm(PluginForm):
         """
         Called when the plugin form is created
         """
+        global _idangr_ctx
         # Get parent widget
         self.parent = self.FormToPyQtWidget(form)
         
@@ -550,7 +565,8 @@ class IDAngrPanelForm(PluginForm):
         """
         Called when the plugin form is closed
         """
-        del _idangr_ctx.panel
+        global _idangr_panel
+        del _idangr_panel
 
 
     def Show(self):
@@ -569,31 +585,32 @@ class IDAngrActionHandler(idaapi.action_handler_t):
         self.action = action
     
     def activate(self, ctx):
+        global _idangr_ctx, _idangr_panel
         if self.action == "Find":
             addr = idaapi.get_screen_ea()
             if addr in _idangr_ctx.avoid:
                 _idangr_ctx.avoid.remove(addr)
-                _idangr_ctx.panel.removeAvoid(addr)
+                _idangr_panel.removeAvoid(addr)
             if addr in _idangr_ctx.find:
                 return
             _idangr_ctx.find.append(addr)
-            _idangr_ctx.panel.addFind(addr)
+            _idangr_panel.addFind(addr)
         elif self.action == "Avoid":
             addr = idaapi.get_screen_ea()
             if addr in _idangr_ctx.find:
                 _idangr_ctx.find.remove(addr)
-                _idangr_ctx.panel.removeFind(addr)
+                _idangr_panel.removeFind(addr)
             if addr in _idangr_ctx.avoid:
                 return
             _idangr_ctx.avoid.append(addr)
-            _idangr_ctx.panel.addAvoid(addr)
+            _idangr_panel.addAvoid(addr)
         elif self.action == "Symbolic":
             addr = idaapi.get_screen_ea()
             #if addr in _idangr_ctx.simmem:
             #    return
             m = IDAngrAddMemDialog.getMem(addr)
             if m != None:
-                _idangr_ctx.panel.addMem(m[0], m[1])
+                _idangr_panel.addMem(m[0], m[1])
                 #_idangr_ctx.simmem.append(m)
         
         
@@ -615,15 +632,18 @@ idaapi.register_action(idaapi.action_desc_t('Find', 'Find', IDAngrActionHandler(
 idaapi.register_action(idaapi.action_desc_t('Avoid', 'Avoid', IDAngrActionHandler("Avoid")))
 idaapi.register_action(idaapi.action_desc_t('Symbolic', 'Symbolic', IDAngrActionHandler("Symbolic")))
 
-_idangr_ctx.hooks = IDAngrHooks()
-_idangr_ctx.hooks.hook()
+_idangr_hooks = IDAngrHooks()
+_idangr_hooks.hook()
 
 '''
 try:
-    _idangr_ctx.panel
+    _idangr_panel
 except:
-    _idangr_ctx.panel = IDAngrPanelForm()'''
-_idangr_ctx.panel = IDAngrPanelForm()
-_idangr_ctx.panel.Show()
+    _idangr_panel = IDAngrPanelForm()'''
+_idangr_panel = IDAngrPanelForm()
+_idangr_panel.Show()
+
+
+
 
 
