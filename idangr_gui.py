@@ -9,28 +9,29 @@ import sip
 import pickle
 
 class IDAngrCtx(object):
-    find = []
-    avoid = []
-    find_lambda = "def find_cond(state):\n\tsol = state.solver.eval\n\tfor addr in finds:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
-    avoid_lambda = "def avoid_cond(state):\n\tsol = state.solver.eval\n\tfor addr in avoids:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
-    regs = []
-    simregs = []
-    simmem = []
-    constraints = {} #{ item: (code string, lambda) }
-    stateman = None
-    foundstate = None
-    simman = None
+    def __init__(self):
+        self.find = []
+        self.avoid = []
+        self.find_lambda = "def find_cond(state):\n\tsol = state.solver.eval\n\tfor addr in finds:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
+        self.avoid_lambda = "def avoid_cond(state):\n\tsol = state.solver.eval\n\tfor addr in avoids:\n\t\tif sol(state.regs.pc) == addr: return True\n\treturn False"
+        self.regs = []
+        self.simregs = []
+        self.simmem = []
+        self.constraints = {} #{ item: (code string, lambda) }
+        self.stateman = None
+        self.foundstate = None
+        self.simman = None
 
 _idangr_ctx = IDAngrCtx()
 
 def saveCtx(filename):
     global _idangr_ctx
-    with open(filename, "w") as fh:
+    with open(filename, "wb") as fh:
         pickle.dump(_idangr_ctx, fh)
 
 def loadCtx(filename):
     global _idangr_ctx
-    with open(filename, "r") as fh:
+    with open(filename, "rb") as fh:
         _idangr_ctx = pickle.load(fh)
 
 
@@ -517,6 +518,32 @@ class IDAngrPanelForm(PluginForm):
         fd = self.ui.filesBox.value()
         IDAngrTextViewerForm.showText(_idangr_ctx.foundstate.posix.dumps(fd), "File %d Viewer" % fd)
     
+    def loadClicked(self):
+        global _idangr_ctx
+        filename = QtWidgets.QFileDialog.getOpenFileName(self.parent, 'Open File')[0]
+        if filename != "":
+            self.resetClicked()
+            loadCtx(filename)
+            for addr in _idangr_ctx.find:
+                self.addFind(addr)
+            for addr in _idangr_ctx.avoid:
+                self.addAvoid(addr)
+                
+            tablemodel = IDAngrTableModel(_idangr_ctx.simregs, ['Name', 'Size', 'Value'], self.parent)
+            self.ui.regsView.setModel(tablemodel)
+            self.ui.regsView.resizeColumnsToContents()
+            
+            tablemodel = IDAngrTableModel(_idangr_ctx.simmem, ['Address', 'Length', 'Value'], self.parent)
+            self.ui.memoryView.setModel(tablemodel)
+            self.ui.memoryView.resizeColumnsToContents()
+        
+    
+    def saveClicked(self):
+        global _idangr_ctx
+        filename = QtWidgets.QFileDialog.getSaveFileName(self.parent, 'Save File')[0]
+        if filename != "":
+            saveCtx(filename)
+    
     
     def OnCreate(self, form):
         """
@@ -539,6 +566,8 @@ class IDAngrPanelForm(PluginForm):
         self.ui.nextBtn.clicked.connect(self.nextClicked)
         self.ui.todbgBtn.clicked.connect(self.todbgClicked)
         self.ui.viewFileBtn.clicked.connect(self.viewFileClicked)
+        self.ui.loadBtn.clicked.connect(self.loadClicked)
+        self.ui.saveBtn.clicked.connect(self.saveClicked)
         
         _idangr_ctx.regs = sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[0])
         
