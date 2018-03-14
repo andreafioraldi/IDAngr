@@ -270,73 +270,76 @@ class SimIdaMemory(object):
         if self.state is not None:
             self.state.scratch.push_priv(True)
         
-        #return True
-        
         if self._memory_backer is None:
             pass
         
-        elif isinstance(self._memory_backer, cle.Clemory):
-            # first, find the right clemory backer
-            for addr, backer in self._memory_backer.cbackers if self.byte_width == 8 else ((x, y) for x, _, y in self._memory_backer.stride_repr):
-                start_backer = new_page_addr - addr
-                if isinstance(start_backer, BV):
-                    continue
-                if start_backer < 0 and abs(start_backer) >= self._page_size:
-                    continue
-                if start_backer >= len(backer):
-                    continue
-
-                # find permission backer associated with the address
-                # fall back to read-write if we can't find any...
-                flags = IdaPage.PROT_READ | IdaPage.PROT_WRITE
-                for start, end in self._permission_map:
-                    if start <= new_page_addr < end:
-                        flags = self._permission_map[(start, end)]
-                        break
-
-                snip_start = max(0, start_backer)
-                write_start = max(new_page_addr, addr + snip_start)
-                write_size = self._page_size - write_start%self._page_size
-
-                if self.byte_width == 8:
-                    snip = _ffi.buffer(backer)[snip_start:snip_start+write_size]
-                    mo = SimMemoryObject(claripy.BVV(snip), write_start, byte_width=self.byte_width)
-                    self._apply_object_to_page(n*self._page_size, mo, page=new_page)
-                else:
-                    for i, byte in enumerate(backer):
-                        mo = SimMemoryObject(claripy.BVV(byte, self.byte_width), write_start + i, byte_width=self.byte_width)
-                        self._apply_object_to_page(n*self._page_size, mo, page=new_page)
-
-                new_page.permissions = claripy.BVV(flags, 3)
-                initialized = True
-
-        elif len(self._memory_backer) <= self._page_size:
-            for i in self._memory_backer:
-                if new_page_addr <= i and i <= new_page_addr + self._page_size:
-                    if isinstance(self._memory_backer[i], claripy.ast.Base):
-                        backer = self._memory_backer[i]
-                    elif isinstance(self._memory_backer[i], bytes):
-                        backer = claripy.BVV(self._memory_backer[i])
-                    else:
-                        backer = claripy.BVV(self._memory_backer[i], self.byte_width)
-                    mo = SimMemoryObject(backer, i, byte_width=self.byte_width)
-                    self._apply_object_to_page(n*self._page_size, mo, page=new_page)
-                    initialized = True
-        elif len(self._memory_backer) > self._page_size:
-            for i in range(self._page_size):
-                try:
-                    if isinstance(self._memory_backer[i], claripy.ast.Base):
-                        backer = self._memory_backer[i]
-                    elif isinstance(self._memory_backer[i], bytes):
-                        backer = claripy.BVV(self._memory_backer[i])
-                    else:
-                        backer = claripy.BVV(self._memory_backer[i], self.byte_width)
-                    mo = SimMemoryObject(backer, new_page_addr+i, byte_width=self.byte_width)
-                    self._apply_object_to_page(n*self._page_size, mo, page=new_page)
-                    initialized = True
-                except KeyError:
-                    pass
+        from idangr_src import load_project
+        project = load_project()
         
+        if idc.SegName(new_page_addr) == project.arch.got_section_name: #only GOT, yes this is very weird
+        
+            if isinstance(self._memory_backer, cle.Clemory):
+                # first, find the right clemory backer
+                for addr, backer in self._memory_backer.cbackers if self.byte_width == 8 else ((x, y) for x, _, y in self._memory_backer.stride_repr):
+                    start_backer = new_page_addr - addr
+                    if isinstance(start_backer, BV):
+                        continue
+                    if start_backer < 0 and abs(start_backer) >= self._page_size:
+                        continue
+                    if start_backer >= len(backer):
+                        continue
+
+                    # find permission backer associated with the address
+                    # fall back to read-write if we can't find any...
+                    flags = IdaPage.PROT_READ | IdaPage.PROT_WRITE
+                    for start, end in self._permission_map:
+                        if start <= new_page_addr < end:
+                            flags = self._permission_map[(start, end)]
+                            break
+
+                    snip_start = max(0, start_backer)
+                    write_start = max(new_page_addr, addr + snip_start)
+                    write_size = self._page_size - write_start%self._page_size
+
+                    if self.byte_width == 8:
+                        snip = _ffi.buffer(backer)[snip_start:snip_start+write_size]
+                        mo = SimMemoryObject(claripy.BVV(snip), write_start, byte_width=self.byte_width)
+                        self._apply_object_to_page(n*self._page_size, mo, page=new_page)
+                    else:
+                        for i, byte in enumerate(backer):
+                            mo = SimMemoryObject(claripy.BVV(byte, self.byte_width), write_start + i, byte_width=self.byte_width)
+                            self._apply_object_to_page(n*self._page_size, mo, page=new_page)
+
+                    new_page.permissions = claripy.BVV(flags, 3)
+                    initialized = True
+
+            elif len(self._memory_backer) <= self._page_size:
+                for i in self._memory_backer:
+                    if new_page_addr <= i and i <= new_page_addr + self._page_size:
+                        if isinstance(self._memory_backer[i], claripy.ast.Base):
+                            backer = self._memory_backer[i]
+                        elif isinstance(self._memory_backer[i], bytes):
+                            backer = claripy.BVV(self._memory_backer[i])
+                        else:
+                            backer = claripy.BVV(self._memory_backer[i], self.byte_width)
+                        mo = SimMemoryObject(backer, i, byte_width=self.byte_width)
+                        self._apply_object_to_page(n*self._page_size, mo, page=new_page)
+                        initialized = True
+            elif len(self._memory_backer) > self._page_size:
+                for i in range(self._page_size):
+                    try:
+                        if isinstance(self._memory_backer[i], claripy.ast.Base):
+                            backer = self._memory_backer[i]
+                        elif isinstance(self._memory_backer[i], bytes):
+                            backer = claripy.BVV(self._memory_backer[i])
+                        else:
+                            backer = claripy.BVV(self._memory_backer[i], self.byte_width)
+                        mo = SimMemoryObject(backer, new_page_addr+i, byte_width=self.byte_width)
+                        self._apply_object_to_page(n*self._page_size, mo, page=new_page)
+                        initialized = True
+                    except KeyError:
+                        pass
+            
         # page from debugger
         try:
             seg = idaapi.getseg(new_page_addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
@@ -350,10 +353,12 @@ class SimIdaMemory(object):
                     perms += IdaPage.PROT_READ
                 new_page.permissions  = claripy.BVV(perms, 3)
                 #print "permissions setted %x  %d" % (new_page_addr, perms)
+                
                 initialized = True
                 setattr(new_page, "from_ida_dbg", True)
-        except:
-            pass
+        except Exception as ee:
+            import traceback
+            traceback.print_exc()
         
         if self.state is not None:
             self.state.scratch.pop_priv()

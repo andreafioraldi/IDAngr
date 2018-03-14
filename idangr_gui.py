@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
 from ui import *
-from idangr import *
+from idangr_src import *
 
 import sip
 import pickle
