@@ -72,7 +72,7 @@ Python>idc.GetRegValue("esi")
 See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) folder.
 
 ## TODO
-+ improve memory read from debugger (working on a cle loader)
++ add predefined constraints collection to gui
 + add a taint engine based on intel pin
 + create abstract classes to work with different debuggers (radare2 coming soon!) (new repo)
 
