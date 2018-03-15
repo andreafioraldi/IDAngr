@@ -1,19 +1,11 @@
-from mem import SimSymbolicIdaMemory
+from memory import SimSymbolicIdaMemory
+from context import load_project
+
 import angr
+import claripy
+
 import idaapi
 import idc
-import claripy
-import cle
-
-project = None
-
-def load_project():
-    global project
-    if project == None:
-        print " >> creating angr project..."
-        project = angr.Project(idaapi.get_input_file_path(), main_opts={'custom_base_addr': idaapi.get_imagebase()}, load_options={"auto_load_libs":False})
-        print " >> done."
-    return project
 
 
 def StateShot():
@@ -32,56 +24,11 @@ def StateShot():
         except:
             pass
     
+    ## TODO inject code to get brk
+    
     return state
 
 
-class SimbolicsSet(object):
-    '''
-    for future use
-    '''
-    def __init__(self):
-        self.symbolics = {}
-    
-    def add(self, key, size=None):
-        '''
-        key: memory address(int) or register name(str)
-        size: size of object in bytes
-        '''
-        project = load_project()
-        if key in project.arch.registers:
-            if size == None:
-                size = project.arch.registers[key][1]
-            size *= 8
-            s = claripy.BVS("idangr_reg_" + str(key), size)
-            self.symbolics[key] = (s, size)
-        elif type(key) == int or type(key) == long:
-            if size == None:
-                size = project.arch.bits
-            else:
-                size *= 8
-            s = claripy.BVS("idangr_mem_" + hex(key), size)
-            self.symbolics[key] = (s, size)
-        elif type(key) == claripy.ast.bv.BV:
-            key = self.state.solver.eval(key, cast_to=int)
-            self.sim(key, size)
-        else:
-            raise ValueError("key must be a register name or a memory address, not %s" % str(type(key)))
-    
-    def remove(self, key):
-        if type(key) == claripy.ast.bv.BV:
-            key = self.state.solver.eval(key, cast_to=int)
-        del self.symbolics[key]
-    
-    def regs(self):
-        for key in self.symbolics:
-            if type(key) == str:
-                yield key
-    
-    def mems(self):
-        for key in self.symbolics:
-            if type(key) != str:
-                yield (key, self.symbolics[key][1])
-    
 
 class StateManager(object):
     def __init__(self, state=None):
@@ -175,4 +122,61 @@ class StateManager(object):
                 print " >> failed to concretize %s" % key
                 #print ee
         return ret
+        
+
+
+
+
+
+
+
+
+"""
+class SimbolicsSet(object):
+    '''
+    for future use
+    '''
+    def __init__(self):
+        self.symbolics = {}
+    
+    def add(self, key, size=None):
+        '''
+        key: memory address(int) or register name(str)
+        size: size of object in bytes
+        '''
+        project = load_project()
+        if key in project.arch.registers:
+            if size == None:
+                size = project.arch.registers[key][1]
+            size *= 8
+            s = claripy.BVS("idangr_reg_" + str(key), size)
+            self.symbolics[key] = (s, size)
+        elif type(key) == int or type(key) == long:
+            if size == None:
+                size = project.arch.bits
+            else:
+                size *= 8
+            s = claripy.BVS("idangr_mem_" + hex(key), size)
+            self.symbolics[key] = (s, size)
+        elif type(key) == claripy.ast.bv.BV:
+            key = self.state.solver.eval(key, cast_to=int)
+            self.sim(key, size)
+        else:
+            raise ValueError("key must be a register name or a memory address, not %s" % str(type(key)))
+    
+    def remove(self, key):
+        if type(key) == claripy.ast.bv.BV:
+            key = self.state.solver.eval(key, cast_to=int)
+        del self.symbolics[key]
+    
+    def regs(self):
+        for key in self.symbolics:
+            if type(key) == str:
+                yield key
+    
+    def mems(self):
+        for key in self.symbolics:
+            if type(key) != str:
+                yield (key, self.symbolics[key][1])
+    """
 
