@@ -1,7 +1,7 @@
 import angr
 import claripy
 
-from idangr_src import *
+from idangr import *
 
 print
 print "########### IDAngr ###########"
