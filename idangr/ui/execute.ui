@@ -76,12 +76,12 @@
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QCheckBox" name="verytestingBox">
+      <widget class="QCheckBox" name="selfmodBox">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
-        <string>verytesting</string>
+        <string>use self modifying code module</string>
        </property>
       </widget>
      </item>

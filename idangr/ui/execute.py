@@ -48,10 +48,10 @@ class Ui_IDAngrExecDialog(object):
         self.gridLayout_3.addWidget(self.buttonBox, 2, 0, 1, 1)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.verytestingBox = QtWidgets.QCheckBox(IDAngrExecDialog)
-        self.verytestingBox.setEnabled(False)
-        self.verytestingBox.setObjectName("verytestingBox")
-        self.horizontalLayout.addWidget(self.verytestingBox)
+        self.selfmodBox = QtWidgets.QCheckBox(IDAngrExecDialog)
+        self.selfmodBox.setEnabled(True)
+        self.selfmodBox.setObjectName("selfmodBox")
+        self.horizontalLayout.addWidget(self.selfmodBox)
         self.gridLayout_3.addLayout(self.horizontalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(IDAngrExecDialog)
@@ -64,5 +64,5 @@ class Ui_IDAngrExecDialog(object):
         IDAngrExecDialog.setWindowTitle(_translate("IDAngrExecDialog", "Exec"))
         self.useFindCondBox.setText(_translate("IDAngrExecDialog", "use find condition and not find addresses list (do not overwrite function name)"))
         self.useAvoidCondBox.setText(_translate("IDAngrExecDialog", "use avoid condition and not avoid addresses list (do not overwrite function name)"))
-        self.verytestingBox.setText(_translate("IDAngrExecDialog", "verytesting"))
+        self.selfmodBox.setText(_translate("IDAngrExecDialog", "use self modifying code module"))
 

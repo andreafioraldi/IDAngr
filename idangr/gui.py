@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 
 from core import *
 from ui import *
+from context import *
 
 import angr
 import claripy
@@ -160,6 +161,8 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         if _idangr_ctx.avoid_lambda:
             self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
         
+        self.ui.selfmodBox.setChecked(is_self_modifying())
+        
         self.fh = PythonHighlighter(self.ui.findCondEdit.document())
         self.ah = PythonHighlighter(self.ui.avoidCondEdit.document())
     
@@ -169,6 +172,8 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         dialog = IDAngrExecDialog()
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
+            set_self_modifying(dialog.ui.selfmodBox.isChecked())
+            
             if dialog.ui.useFindCondBox.isChecked():
                 code = dialog.ui.findCondEdit.toPlainText()
                 _idangr_ctx.find_lambda = code
@@ -671,7 +676,7 @@ idaapi.register_action(idaapi.action_desc_t('Symbolic', 'Symbolic', IDAngrAction
 _idangr_hooks = IDAngrHooks()
 _idangr_hooks.hook()
 
-'''
+
 try:
     _idangr_panel
 except:
@@ -684,7 +689,7 @@ def idangr_panel_show():
 if __name__ == "__main__":
     print __name__
     idangr_panel_show()
-'''
+
 
 
 

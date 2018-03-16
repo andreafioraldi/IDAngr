@@ -1,8 +1,8 @@
-from idangr_src import *
-from idangr_src.gui import *
+from idangr import *
+from idangr.gui import *
 
 import angr
 import claripy
 
-IDAngrPanelForm().Show()
+idangr_panel_show()
 
