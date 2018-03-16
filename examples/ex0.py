@@ -1,5 +1,6 @@
+import idangr
 
-sm = StateManager()
+sm = idangr.StateManager()
 
 print "target: found a combination of a1 and a2 that fail the assert"
 

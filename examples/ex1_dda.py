@@ -1,5 +1,7 @@
 #must be loaded after fgets call
 
+from idangr import StateManager
+
 smg = StateManager()
 
 smg.sim(smg["rax"], 100)
