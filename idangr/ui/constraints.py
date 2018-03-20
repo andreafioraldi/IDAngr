@@ -18,12 +18,19 @@ class Ui_IDAngrConstraintsDialog(object):
         self.constrEdit.setEnabled(True)
         self.constrEdit.setObjectName("constrEdit")
         self.gridLayout.addWidget(self.constrEdit, 0, 0, 1, 1)
+        self.formLayout = QtWidgets.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.deafultsButton = QtWidgets.QPushButton(IDAngrConstraintsDialog)
+        self.deafultsButton.setEnabled(False)
+        self.deafultsButton.setObjectName("deafultsButton")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.deafultsButton)
         self.buttonBox = QtWidgets.QDialogButtonBox(IDAngrConstraintsDialog)
         self.buttonBox.setMinimumSize(QtCore.QSize(0, 48))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.buttonBox)
+        self.gridLayout.addLayout(self.formLayout, 1, 0, 1, 1)
 
         self.retranslateUi(IDAngrConstraintsDialog)
         self.buttonBox.accepted.connect(IDAngrConstraintsDialog.accept)
@@ -33,4 +40,5 @@ class Ui_IDAngrConstraintsDialog(object):
     def retranslateUi(self, IDAngrConstraintsDialog):
         _translate = QtCore.QCoreApplication.translate
         IDAngrConstraintsDialog.setWindowTitle(_translate("IDAngrConstraintsDialog", "Edit Constraints"))
+        self.deafultsButton.setText(_translate("IDAngrConstraintsDialog", "Predefined constraints"))
 

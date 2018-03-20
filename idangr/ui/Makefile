@@ -1,4 +1,4 @@
-all: panel.py addmem.py execute.py viewer.py constraints.py
+all: panel.py addmem.py execute.py viewer.py constraints.py saveds.py
 
 panel.py: %.py: %.ui
 	pyuic5 panel.ui -o panel.py
@@ -15,6 +15,9 @@ viewer.py: %.py: %.ui
 constraints.py: %.py: %.ui
 	pyuic5 constraints.ui -o constraints.py
 
+saveds.py: %.py: %.ui
+	pyuic5 saveds.ui -o saveds.py
+
 
 clean:
-	rm panel.py addmem.py execute.py viewer.py constraints.py
+	rm panel.py addmem.py execute.py viewer.py constraints.py saveds.py
