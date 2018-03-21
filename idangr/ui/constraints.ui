@@ -24,9 +24,9 @@
    <item row="1" column="0">
     <layout class="QFormLayout" name="formLayout">
      <item row="0" column="0">
-      <widget class="QPushButton" name="deafultsButton">
+      <widget class="QPushButton" name="savedsBtn">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Predefined constraints</string>

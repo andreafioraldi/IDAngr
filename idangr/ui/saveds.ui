@@ -16,9 +16,9 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>920</x>
-     <y>810</y>
-     <width>341</width>
+     <x>120</x>
+     <y>800</y>
+     <width>1141</width>
      <height>41</height>
     </rect>
    </property>
@@ -35,14 +35,23 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QListWidget" name="selectorList">
+  <widget class="QListView" name="selectorList">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>20</y>
      <width>351</width>
-     <height>771</height>
+     <height>761</height>
     </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>16777215</height>
+    </size>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
   </widget>
   <widget class="QPlainTextEdit" name="codeView">
@@ -51,8 +60,11 @@
      <x>380</x>
      <y>20</y>
      <width>881</width>
-     <height>771</height>
+     <height>761</height>
     </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

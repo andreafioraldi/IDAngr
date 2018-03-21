@@ -13,8 +13,10 @@ import idaapi
 import idc
 import idautils
 
+import glob
 import sip
 import pickle
+import os
 
 class IDAngrCtx(object):
     def __init__(self):
@@ -111,6 +113,44 @@ class IDAngrAddMemDialog(QtWidgets.QDialog):
         return None
 
 
+
+class IDAngrSavedsDialog(QtWidgets.QDialog):
+    
+    def __init__(self, folder, title):
+        QtWidgets.QDialog.__init__(self)
+        
+        self.ui = Ui_IDAngrSavedsDialog()
+        self.ui.setupUi(self)
+        
+        self.setWindowTitle(title)
+        self.h = PythonHighlighter(self.ui.codeView.document())
+        
+        self.folder = folder
+        self.files_list = []
+        for path in glob.glob(os.path.join(folder, "*.py")):
+            self.files_list.append(os.path.basename(path)[:-3])
+        
+        self.ui.selectorList.setModel(QtCore.QStringListModel(self.files_list))
+        self.model = self.ui.selectorList.selectionModel()
+        self.model.selectionChanged.connect(self.selectorClicked)
+        
+    def selectorClicked(self):
+        item = self.model.selection().indexes()[0]
+        path = os.path.join(self.folder, item.data() + ".py")
+        with open(path, "r") as f:
+            code = f.read()
+        self.ui.codeView.setPlainText(code)
+        
+    
+    @staticmethod
+    def go(folder, title="Saveds"):
+        dialog = IDAngrSavedsDialog(folder, title)
+        r = dialog.exec_()
+        if r == QtWidgets.QDialog.Accepted:
+            return dialog.ui.codeView.toPlainText()
+        
+
+
 class IDAngrConstraintsDialog(QtWidgets.QDialog):
     
     def __init__(self, item, text=""):
@@ -125,6 +165,14 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
         self.ui.constrEdit.setPlainText(text)
         self.setWindowTitle("Edit Constraints - " + str(item))
         self.h = PythonHighlighter(self.ui.constrEdit.document())
+        
+        self.ui.savedsBtn.clicked.connect(self.savedsClicked)
+        
+    def savedsClicked(self):
+        code = IDAngrSavedsDialog.go(os.path.join(os.path.dirname(__file__), "saveds", "constraints"), "Predefined Constraints")
+        if code == None:
+            return
+        self.ui.constrEdit.setPlainText(code)
     
     @staticmethod
     def go(item):

@@ -20,10 +20,10 @@ class Ui_IDAngrConstraintsDialog(object):
         self.gridLayout.addWidget(self.constrEdit, 0, 0, 1, 1)
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
-        self.deafultsButton = QtWidgets.QPushButton(IDAngrConstraintsDialog)
-        self.deafultsButton.setEnabled(False)
-        self.deafultsButton.setObjectName("deafultsButton")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.deafultsButton)
+        self.savedsBtn = QtWidgets.QPushButton(IDAngrConstraintsDialog)
+        self.savedsBtn.setEnabled(True)
+        self.savedsBtn.setObjectName("savedsBtn")
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.savedsBtn)
         self.buttonBox = QtWidgets.QDialogButtonBox(IDAngrConstraintsDialog)
         self.buttonBox.setMinimumSize(QtCore.QSize(0, 48))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -40,5 +40,5 @@ class Ui_IDAngrConstraintsDialog(object):
     def retranslateUi(self, IDAngrConstraintsDialog):
         _translate = QtCore.QCoreApplication.translate
         IDAngrConstraintsDialog.setWindowTitle(_translate("IDAngrConstraintsDialog", "Edit Constraints"))
-        self.deafultsButton.setText(_translate("IDAngrConstraintsDialog", "Predefined constraints"))
+        self.savedsBtn.setText(_translate("IDAngrConstraintsDialog", "Predefined constraints"))
 
