@@ -1,5 +1,5 @@
 from memory import SimSymbolicIdaMemory
-from context import load_project
+from context import load_project, get_memory_type, EXECUTE_ALL_DISCARD_LOADER
 
 import angr
 import claripy
@@ -14,6 +14,7 @@ def StateShot():
     project = load_project()
     
     mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
+    
     state = project.factory.blank_state(plugins={"memory": mem})
 
     for reg in sorted(project.arch.registers, key=lambda x: project.arch.registers.get(x)[1]):

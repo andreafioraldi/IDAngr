@@ -209,7 +209,9 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         if _idangr_ctx.avoid_lambda:
             self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
         
-        self.ui.selfmodBox.setChecked(is_self_modifying())
+        self.ui.textloaderBox.setChecked(get_memory_type() == TEXT_SIMPROCS_FROM_LOADER)
+        self.ui.gotloaderBox.setChecked(get_memory_type() == ONLY_SIMPROCS_FROM_LOADER)
+        self.ui.execallBox.setChecked(get_memory_type() == EXECUTE_ALL_DISCARD_LOADER)
         
         self.fh = PythonHighlighter(self.ui.findCondEdit.document())
         self.ah = PythonHighlighter(self.ui.avoidCondEdit.document())
@@ -220,7 +222,12 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         dialog = IDAngrExecDialog()
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
-            set_self_modifying(dialog.ui.selfmodBox.isChecked())
+            if dialog.ui.textloaderBox.isChecked():
+                set_memory_type(TEXT_SIMPROCS_FROM_LOADER)
+            elif dialog.ui.gotloaderBox.isChecked():
+                set_memory_type(ONLY_SIMPROCS_FROM_LOADER)
+            elif dialog.ui.execallBox.isChecked():
+                set_memory_type(EXECUTE_ALL_DISCARD_LOADER)
             
             if dialog.ui.useFindCondBox.isChecked():
                 code = dialog.ui.findCondEdit.toPlainText()

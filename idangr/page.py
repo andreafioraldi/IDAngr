@@ -17,7 +17,7 @@ l = logging.getLogger("idangr.mem.page")
 from angr.storage import paged_memory
 import claripy
 
-from context import load_project, is_self_modifying
+from context import load_project, get_memory_type, TEXT_SIMPROCS_FROM_LOADER, ONLY_SIMPROCS_FROM_LOADER
 import idaapi
 import idc
 
@@ -279,7 +279,7 @@ class SimIdaMemory(object):
         
         #print "LOADING 0x%x" % new_page_addr
         
-        if idc.SegName(new_page_addr) == project.arch.got_section_name or not is_self_modifying(): #yes this is weird
+        if get_memory_type() == TEXT_SIMPROCS_FROM_LOADER or (get_memory_type() == ONLY_SIMPROCS_FROM_LOADER and idc.SegName(new_page_addr) == project.arch.got_section_name): #yes this is weird
         
             if isinstance(self._memory_backer, cle.Clemory):
                 # first, find the right clemory backer

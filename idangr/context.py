@@ -16,12 +16,19 @@ def load_project():
     return project
 
 
-self_modifying = False
+TEXT_SIMPROCS_FROM_LOADER = 0
+ONLY_SIMPROCS_FROM_LOADER = 1
+EXECUTE_ALL_DISCARD_LOADER = 2
 
-def set_self_modifying(value):
-    global self_modifying
-    self_modifying = value
+memory_type = TEXT_SIMPROCS_FROM_LOADER
 
-def is_self_modifying():
-    global self_modifying
-    return self_modifying
+def set_memory_type(value):
+    global memory_type
+    if value not in range(0,3):
+        raise ValueError()
+    memory_type = value
+
+def get_memory_type():
+    global memory_type
+    return memory_type
+

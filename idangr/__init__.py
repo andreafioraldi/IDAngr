@@ -1,3 +1,3 @@
 from core import StateShot, StateManager
-from context import load_project, set_self_modifying, is_self_modifying
+from context import load_project, set_memory_type, get_memory_type, TEXT_SIMPROCS_FROM_LOADER, ONLY_SIMPROCS_FROM_LOADER, EXECUTE_ALL_DISCARD_LOADER
 
