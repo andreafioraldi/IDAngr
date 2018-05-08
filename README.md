@@ -6,6 +6,8 @@
 
 Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a state from the current debug session.
 
+> tested only with x86/x86_64 ELF binaries on linux at the moment
+
 note: to install angr on Windows without compiling it look [here](https://github.com/andreafioraldi/angr-win64-wheels)
 
 ## Usage

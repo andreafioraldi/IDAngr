@@ -1,5 +1,6 @@
 import idc
 import idaapi
+import claripy
 
 def get_dbg_brk_linux64():
     '''
@@ -32,11 +33,11 @@ def get_dbg_brk_linux64():
     idc.set_reg_value(inj, "rip")
 
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
 
     brk_res = idc.get_reg_value("rax")
 
@@ -86,11 +87,11 @@ def get_dbg_brk_linux32():
     idc.set_reg_value(inj, "eip")
 
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
     idaapi.step_into()
-    idc.GetDebuggerEvent(WFNE_SUSP, -1)
+    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
 
     brk_res = idc.get_reg_value("eax")
 
@@ -109,12 +110,15 @@ def get_dbg_brk_linux32():
     return brk_res
 
 
-
-
-if idaapi.get_inf_structure().is_64bit():
-    print "brk(0) = 0x%x" % get_dbg_brk_linux64()
-else:
-    print "brk(0) = 0x%x" % get_dbg_brk_linux32()
+def get_linux_brk():
+    if idaapi.get_inf_structure().is_64bit():
+        curr_brk = get_dbg_brk_linux64()
+        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        return claripy.BVV(curr_brk, 64)
+    else:
+        curr_brk = get_dbg_brk_linux32()
+        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        return claripy.BVV(curr_brk, 32)
 
 
 

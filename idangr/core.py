@@ -1,5 +1,6 @@
 from memory import SimSymbolicIdaMemory
 from context import load_project, get_memory_type, EXECUTE_ALL_DISCARD_LOADER
+from brk import get_linux_brk
 
 import angr
 import claripy
@@ -25,8 +26,11 @@ def StateShot():
         except:
             pass
     
-    ## TODO inject code to get brk
-    
+    ## inject code to get brk if we are on linux x86/x86_64
+    if project.simos.name == "Linux":
+        if project.arch.name in ("AMD64", "X86"):
+            state.posix.set_brk(get_linux_brk())
+
     return state
 
 
