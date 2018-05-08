@@ -6,17 +6,11 @@
 
 Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a state from the current debug session.
 
-> Very naive version, it works but i must improve it
->
-> The GUI is usable now but it has only basic features
->
-> If you want to contribute pr are accepted
-
 note: to install angr on Windows without compiling it look [here](https://github.com/andreafioraldi/angr-win64-wheels)
 
 ## Usage
 
-1. Load the idangr.py script from the ida menu to create an angr project
+1. Load the idangr_core.py script from the ida menu
 2. During the debug create an instance of StateManager or StateShot
 3. Do things with angr
 4. Return to 2 or exit
@@ -30,6 +24,10 @@ IDAngr adds a panel with a self explanatory interface.
 You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
 
 [![youtube_img](/images/youtube.png)](https://www.youtube.com/watch?v=orFYI9C1KqE)
+
+## Plugin 
+
+You can install indagr as a plugin (see [INSTALL.md](INSTALL.md)), to activate it press Ctrl+Alt+I.
 
 ## Api
 

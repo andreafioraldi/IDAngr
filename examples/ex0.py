@@ -1,12 +1,13 @@
 import idangr
+import idc
 
 sm = idangr.StateManager()
 
 print "target: found a combination of a1 and a2 that fail the assert"
 
 print "before:"
-print "  a1 =", Dword(idc.GetRegValue("ebp")+0x8)
-print "  a2 =", Dword(idc.GetRegValue("ebp")+0xc)
+print "  a1 =", idc.Dword(idc.GetRegValue("ebp")+0x8)
+print "  a2 =", idc.Dword(idc.GetRegValue("ebp")+0xc)
 
 a1 = sm["ebp"] +0x8
 a2 = sm["ebp"] +0xc
@@ -25,5 +26,5 @@ if len(m.found) < 1:
 else:
     sm.to_dbg(m.found[0])
     print "after:"
-    print "  a1 =", Dword(idc.GetRegValue("ebp")+0x8)
-    print "  a2 =", Dword(idc.GetRegValue("ebp")+0xc)
+    print "  a1 =", idc.Dword(idc.GetRegValue("ebp")+0x8)
+    print "  a2 =", idc.Dword(idc.GetRegValue("ebp")+0xc)
