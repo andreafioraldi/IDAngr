@@ -1,6 +1,7 @@
 from memory import SimSymbolicIdaMemory
-from context import load_project, get_memory_type, EXECUTE_ALL_DISCARD_LOADER
+from context import load_project, get_memory_type, SIMPROCS_FROM_CLE
 from brk import get_linux_brk
+from got_builder import build_mixed_got
 
 import angr
 import claripy
@@ -31,6 +32,9 @@ def StateShot():
         if project.arch.name in ("AMD64", "X86"):
             state.posix.set_brk(get_linux_brk())
 
+    if get_memory_type() == SIMPROCS_FROM_CLE:
+        state = build_mixed_got(state)
+    
     return state
 
 

@@ -1,5 +1,4 @@
 import angr
-#import cle
 
 import idaapi
 
@@ -15,12 +14,12 @@ def load_project():
         print " >> done."
     return project
 
+SIMPROCS_FROM_CLE = 0
+ONLY_GOT_FROM_CLE = 1
+TEXT_GOT_FROM_CLE = 2
+GET_ALL_DISCARD_CLE = 3
 
-TEXT_SIMPROCS_FROM_LOADER = 0
-ONLY_SIMPROCS_FROM_LOADER = 1
-EXECUTE_ALL_DISCARD_LOADER = 2
-
-memory_type = TEXT_SIMPROCS_FROM_LOADER
+memory_type = SIMPROCS_FROM_CLE
 
 def set_memory_type(value):
     global memory_type
