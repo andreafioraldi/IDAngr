@@ -33,7 +33,7 @@ def StateShot():
             state.posix.set_brk(get_linux_brk())
 
     if get_memory_type() == SIMPROCS_FROM_CLE:
-        state = build_mixed_got(state)
+        state = build_mixed_got(projet, state)
     
     return state
 
