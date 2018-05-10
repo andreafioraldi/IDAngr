@@ -24,25 +24,57 @@ class SegIO(object):
         return r
 
 
+known_resolved_symbols = {}
+
 def build_mixed_got(proj, state):
+    global known_resolved_symbols
     
     got_start = -1
+    plt_start = -1
     for ea in idautils.Segments():
         if idc.SegName(ea) == proj.arch.got_section_name:
             got_start = idc.SegStart(ea)
             got_end = idc.SegEnd(ea)
+        elif idc.SegName(ea) == ".plt":
+            plt_start = idc.SegStart(ea)
+            plt_end = idc.SegEnd(ea)
     
     if got_start == -1:
-        print "IDAngr: cannot find .got section"
+        print "IDAngr: cannot find .got.plt section"
+        return state
+    if plt_start == -1:
+        print "IDAngr: cannot find .plt section"
         return state
     
     entry_len = proj.arch.bits / 8
     get_mem = idc.Dword if entry_len == 4 else idc.Qword
     
+    '''
     print "## angr got - before ##"
     for a in xrange(got_start, got_end, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
+    '''
+    
+    got_start += 3*entry_len # skip first 3 entries
+    
+    to_resolve = []
+    to_resolve_map = {}
+    
+    for a in xrange(got_start, got_end, entry_len):
+        state_val = state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved)
+        if state_val in proj._sim_procedures:
+            if proj._sim_procedures[state_val].is_stub: # real simprocs or not?
+                dbg_val = get_mem(a)
+                name = proj._sim_procedures[state_val].display_name
+                
+                if dbg_val >= plt_end or dbg_val < plt_start: # already resolved by the loader in the dbg
+                    setattr(state.mem[a], "uint%d_t" % proj.arch.bits, dbg_val)
+                elif name in known_resolved_symbols:
+                    setattr(state.mem[a], "uint%d_t" % proj.arch.bits, known_resolved_symbols[name])
+                else:
+                    to_resolve.append(name)
+                    to_resolve_map[name] = a
     
     #libs prefix names
     names = map(lambda x: x.split(".")[0], proj.loader.requested_names)
@@ -69,28 +101,13 @@ def build_mixed_got(proj, state):
     if len(libs_addr) == 0:
         return state # static binary (?)
     
-    got_start += 3*entry_len # skip first 3 entry
-    
-    to_resolve = []
-    to_resolve_map = {}
-    
-    for a in xrange(got_start, got_end, entry_len):
-        state_val = state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved)
-        if state_val in proj._sim_procedures:
-            if proj._sim_procedures[state_val].is_stub: # real simprocs or not?
-                dbg_val = get_mem(a)
-                if dbg_val >= libs_addr[0]: # already resolved by the loader in the dbg
-                    setattr(state.mem[a], "uint%d_t" % proj.arch.bits, dbg_val)
-                else:
-                    name = proj._sim_procedures[state_val].display_name
-                    to_resolve.append(name)
-                    to_resolve_map[name] = a
-    
+    '''
     print to_resolve
     print "## angr got - step 0 ##"
     for a in xrange(got_start, got_end, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
+    '''
     
     if len(to_resolve) > 0:
         for start in libs_addr:
@@ -114,22 +131,26 @@ def build_mixed_got(proj, state):
                 for nsym, symbol in enumerate(section.iter_symbols()):
                     if symbol.name in to_resolve and "FUNC" in symbol['st_info']['type']:
                         resolved = symbol["st_value"] + start
-                        print "resolved 0x%x %s --> 0x%x" % (to_resolve_map[symbol.name], symbol.name, resolved)
                         setattr(state.mem[to_resolve_map[symbol.name]], "uint%d_t" % proj.arch.bits, resolved)
                         to_resolve.remove(symbol.name)
+                        known_resolved_symbols[symbol.name] = resolved
+                        #print "resolved 0x%x %s --> 0x%x" % (to_resolve_map[symbol.name], symbol.name, resolved)
                         
-            
         if len(to_resolve) > 0:
             for n in to_resolve:
                 print "IDAngr: warning symbol %s not resolve, using stub simproc" % n
 
+    '''
     print "## angr got - final ##"
     for a in xrange(got_start, got_end, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
+    '''
     
+    return state
 
     
-
+def build_bind_now_got(proj, state):
+    pass
 
 

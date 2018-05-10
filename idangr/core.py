@@ -11,6 +11,9 @@ import idc
 
 
 def StateShot():
+    if not idaapi.is_debugger_on() or not idaapi.dbg_can_query():
+        raise Exception("The debugger must be active and suspended before calling StateShot")
+    
     idc.RefreshDebuggerMemory()
     
     project = load_project()
@@ -27,13 +30,14 @@ def StateShot():
         except:
             pass
     
-    ## inject code to get brk if we are on linux x86/x86_64
+    
     if project.simos.name == "Linux":
+        ## inject code to get brk if we are on linux x86/x86_64
         if project.arch.name in ("AMD64", "X86"):
             state.posix.set_brk(get_linux_brk())
-
-    if get_memory_type() == SIMPROCS_FROM_CLE:
-        state = build_mixed_got(projet, state)
+        ## insert simprocs when possible
+        if get_memory_type() == SIMPROCS_FROM_CLE:
+            state = build_mixed_got(project, state)
     
     return state
 

@@ -102,11 +102,11 @@ def get_dbg_brk_linux32():
 def get_linux_brk():
     if idaapi.get_inf_structure().is_64bit():
         curr_brk = get_dbg_brk_linux64()
-        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        #print "get_linux_brk: current brk = 0x%x" % curr_brk
         return claripy.BVV(curr_brk, 64)
     else:
         curr_brk = get_dbg_brk_linux32()
-        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        #print "get_linux_brk: current brk = 0x%x" % curr_brk
         return claripy.BVV(curr_brk, 32)
 
 
