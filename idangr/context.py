@@ -23,8 +23,8 @@ memory_type = SIMPROCS_FROM_CLE
 
 def set_memory_type(value):
     global memory_type
-    if value not in range(0,3):
-        raise ValueError()
+    if value not in range(0,4):
+        raise ValueError("invalid memory_type")
     memory_type = value
 
 def get_memory_type():

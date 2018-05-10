@@ -74,7 +74,7 @@ class IdaPage(paged_memory.BasePage):
         mo = self._storage[page_idx-self._page_addr]
         #print filter(lambda x: x != None, self._storage)
         if mo is None and hasattr(self, "from_ida_dbg"):    
-            byte_val = idc.Byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+            byte_val = idaapi.get_byte(page_idx) ### CHANGE TO SUPPORT OTHER DEBUGGERS
             mo = SimMemoryObject(claripy.BVV(byte_val, 8), page_idx)
             self._storage[page_idx-self._page_addr] = mo
         return mo
@@ -95,7 +95,7 @@ class IdaPage(paged_memory.BasePage):
             i = addr - self._page_addr
             mo = self._storage[i]
             if mo is None and hasattr(self, "from_ida_dbg"):
-                byte_val = idc.Byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
+                byte_val = idaapi.get_byte(addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
                 mo = SimMemoryObject(claripy.BVV(byte_val, 8), addr)
                 self._storage[i] = mo
             if mo is not None and (not items or items[-1][1] is not mo):
@@ -276,10 +276,11 @@ class SimIdaMemory(object):
             pass
         
         project = load_project()
+        seg = idaapi.getseg(new_page_addr)
         
         #print "LOADING 0x%x" % new_page_addr
         
-        if get_memory_type() == TEXT_GOT_FROM_CLE or (get_memory_type() in (ONLY_GOT_FROM_CLE, SIMPROCS_FROM_CLE) and idc.SegName(new_page_addr) == project.arch.got_section_name): #yes this is weird
+        if get_memory_type() == TEXT_GOT_FROM_CLE or (get_memory_type() in ONLY_GOT_FROM_CLE and seg.name == project.arch.got_section_name): #yes this is weird
         
             if isinstance(self._memory_backer, cle.Clemory):
                 # first, find the right clemory backer
@@ -345,7 +346,6 @@ class SimIdaMemory(object):
             
         # page from debugger
         try:
-            seg = idaapi.getseg(new_page_addr) ### CHANGE TO SUPPORT OTHER DEBUGGERS
             if seg is not None:
                 perms = 0
                 if seg.perm & idaapi.SEGPERM_EXEC:
