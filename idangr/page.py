@@ -280,7 +280,7 @@ class SimIdaMemory(object):
         
         #print "LOADING 0x%x" % new_page_addr
         
-        if get_memory_type() == TEXT_GOT_FROM_CLE or (get_memory_type() in ONLY_GOT_FROM_CLE and seg.name == project.arch.got_section_name): #yes this is weird
+        if get_memory_type() == TEXT_GOT_FROM_CLE or (get_memory_type() == ONLY_GOT_FROM_CLE and seg.name == project.arch.got_section_name): #yes this is weird
         
             if isinstance(self._memory_backer, cle.Clemory):
                 # first, find the right clemory backer

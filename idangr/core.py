@@ -18,7 +18,7 @@ def StateShot():
     
     project = load_project()
     
-    mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="idangr_mem")
+    mem = SimSymbolicIdaMemory(memory_backer=project.loader.memory, permissions_backer=None, memory_id="mem")
     
     state = project.factory.blank_state(plugins={"memory": mem})
 
