@@ -1,6 +1,7 @@
 from memory import SimSymbolicIdaMemory
-from context import load_project, get_memory_type, EXECUTE_ALL_DISCARD_LOADER
+from context import load_project, get_memory_type, SIMPROCS_FROM_CLE, ONLY_GOT_FROM_CLE, GET_ALL_DISCARD_CLE
 from brk import get_linux_brk
+from got_builder import build_mixed_got
 
 import angr
 import claripy
@@ -10,7 +11,10 @@ import idc
 
 
 def StateShot():
-    idc.RefreshDebuggerMemory()
+    if not idaapi.is_debugger_on() or not idaapi.dbg_can_query():
+        raise RuntimeError("The debugger must be active and suspended before calling StateShot")
+    
+    idc.refresh_debugger_memory()
     
     project = load_project()
     
@@ -22,15 +26,27 @@ def StateShot():
         if reg in ("sp", "bp", "ip"):
             continue
         try:
-            setattr(state.regs, reg, idc.GetRegValue(reg))
+            setattr(state.regs, reg, idc.get_reg_value(reg))
         except:
             pass
     
-    ## inject code to get brk if we are on linux x86/x86_64
+    
     if project.simos.name == "Linux":
+        ## inject code to get brk if we are on linux x86/x86_64
         if project.arch.name in ("AMD64", "X86"):
             state.posix.set_brk(get_linux_brk())
-
+        
+        if get_memory_type() == SIMPROCS_FROM_CLE:
+            set_memory_type(ONLY_GOT_FROM_CLE)
+            # insert simprocs when possible or resolve the symbol
+            state = build_mixed_got(project, state)
+            set_memory_type(SIMPROCS_FROM_CLE)
+        elif get_memory_type() == GET_ALL_DISCARD_CLE:
+            set_memory_type(ONLY_GOT_FROM_CLE)
+            # angr must not execute loader code so all symbols must be resolved
+            state = build_bind_now_got(project, state)
+            set_memory_type(GET_ALL_DISCARD_CLE)
+    
     return state
 
 
@@ -102,11 +118,11 @@ class StateManager(object):
             try:
                 if key in load_project().arch.registers:
                     r = found_state.solver.eval(self.symbolics[key][0], cast_to=int)
-                    idc.SetRegValue(r, key)
+                    idc.set_reg_value(r, key)
                 else:
                     r = found_state.solver.eval(self.symbolics[key][0], cast_to=str)
                     for i in xrange(len(r)):
-                        idc.PatchByte(key + i, ord(r[i]))
+                        idc.patch_dbg_byte(key + i, ord(r[i]))
             except Exception as ee:
                 print " >> failed to write %s to debugger" % key
                 #print ee
@@ -129,59 +145,4 @@ class StateManager(object):
         return ret
         
 
-
-
-
-
-
-
-
-"""
-class SimbolicsSet(object):
-    '''
-    for future use
-    '''
-    def __init__(self):
-        self.symbolics = {}
-    
-    def add(self, key, size=None):
-        '''
-        key: memory address(int) or register name(str)
-        size: size of object in bytes
-        '''
-        project = load_project()
-        if key in project.arch.registers:
-            if size == None:
-                size = project.arch.registers[key][1]
-            size *= 8
-            s = claripy.BVS("idangr_reg_" + str(key), size)
-            self.symbolics[key] = (s, size)
-        elif type(key) == int or type(key) == long:
-            if size == None:
-                size = project.arch.bits
-            else:
-                size *= 8
-            s = claripy.BVS("idangr_mem_" + hex(key), size)
-            self.symbolics[key] = (s, size)
-        elif type(key) == claripy.ast.bv.BV:
-            key = self.state.solver.eval(key, cast_to=int)
-            self.sim(key, size)
-        else:
-            raise ValueError("key must be a register name or a memory address, not %s" % str(type(key)))
-    
-    def remove(self, key):
-        if type(key) == claripy.ast.bv.BV:
-            key = self.state.solver.eval(key, cast_to=int)
-        del self.symbolics[key]
-    
-    def regs(self):
-        for key in self.symbolics:
-            if type(key) == str:
-                yield key
-    
-    def mems(self):
-        for key in self.symbolics:
-            if type(key) != str:
-                yield (key, self.symbolics[key][1])
-    """
 

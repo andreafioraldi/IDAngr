@@ -1,5 +1,6 @@
 import idc
 import idaapi
+
 import claripy
 
 def get_dbg_brk_linux64():
@@ -8,16 +9,16 @@ def get_dbg_brk_linux64():
     '''
     #TODO this method is so weird, find a unused address to inject code not the base address
     
-    code = ""
-    code += 'H\xc7\xc0\x0c\x00\x00\x00' #mov rax, sys_brk ; 12
-    code += 'H1\xff' #xor rdi, rdi
-    code += '\x0f\x05' #syscall
+    code = '\x0f\x05' #syscall
 
     rax = idc.get_reg_value("rax")
     rdi = idc.get_reg_value("rdi")
     rip = idc.get_reg_value("rip")
     efl = idc.get_reg_value("efl")
-
+    
+    idc.set_reg_value(12, "rax") # sys_brk
+    idc.set_reg_value(0, "rdi")
+    
     base = idaapi.get_imagebase()
 
     #inj = idc.next_head(rip) #skip current instr
@@ -34,10 +35,6 @@ def get_dbg_brk_linux64():
 
     idaapi.step_into()
     idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
-    idaapi.step_into()
-    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
-    idaapi.step_into()
-    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
 
     brk_res = idc.get_reg_value("rax")
 
@@ -48,8 +45,6 @@ def get_dbg_brk_linux64():
 
     for i in xrange(len(save)):
         idc.patch_dbg_byte(inj +i, ord(save[i]))
-
-    save = idc.get_bytes(inj, len(code), use_dbg=True)
 
     #idc.MakeCode(inj)
 
@@ -62,15 +57,15 @@ def get_dbg_brk_linux32():
     '''
     #TODO this method is so weird, find a unused address to inject code not the base address
     
-    code = ""
-    code += '\xb8-\x00\x00\x00' #mov eax, sys_brk ; 45
-    code += '1\xdb' #xor ebx, ebx
-    code += '\xcd\x80' #int 0x80
+    code = '\xcd\x80' #int 0x80
 
     eax = idc.get_reg_value("eax")
     ebx = idc.get_reg_value("ebx")
     eip = idc.get_reg_value("eip")
     efl = idc.get_reg_value("efl")
+    
+    idc.set_reg_value(45, "eax") # sys_brk
+    idc.set_reg_value(0, "ebx")
 
     base = idaapi.get_imagebase()
 
@@ -88,11 +83,7 @@ def get_dbg_brk_linux32():
 
     idaapi.step_into()
     idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
-    idaapi.step_into()
-    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
-    idaapi.step_into()
-    idc.GetDebuggerEvent(idc.WFNE_SUSP, -1)
-
+    
     brk_res = idc.get_reg_value("eax")
 
     idc.set_reg_value(eax, "eax")
@@ -102,9 +93,7 @@ def get_dbg_brk_linux32():
 
     for i in xrange(len(save)):
         idc.patch_dbg_byte(inj +i, ord(save[i]))
-
-    save = idc.get_bytes(inj, len(code), use_dbg=True)
-
+    
     #idc.MakeCode(inj)
 
     return brk_res
@@ -113,11 +102,11 @@ def get_dbg_brk_linux32():
 def get_linux_brk():
     if idaapi.get_inf_structure().is_64bit():
         curr_brk = get_dbg_brk_linux64()
-        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        #print "get_linux_brk: current brk = 0x%x" % curr_brk
         return claripy.BVV(curr_brk, 64)
     else:
         curr_brk = get_dbg_brk_linux32()
-        print "get_linux_brk: current brk = 0x%x" % curr_brk
+        #print "get_linux_brk: current brk = 0x%x" % curr_brk
         return claripy.BVV(curr_brk, 32)
 
 

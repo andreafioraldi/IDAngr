@@ -208,10 +208,11 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             self.ui.findCondEdit.setPlainText(_idangr_ctx.find_lambda)
         if _idangr_ctx.avoid_lambda:
             self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
-        
-        self.ui.textloaderBox.setChecked(get_memory_type() == TEXT_SIMPROCS_FROM_LOADER)
-        self.ui.gotloaderBox.setChecked(get_memory_type() == ONLY_SIMPROCS_FROM_LOADER)
-        self.ui.execallBox.setChecked(get_memory_type() == EXECUTE_ALL_DISCARD_LOADER)
+
+        self.ui.simprocsBox.setChecked(get_memory_type() == SIMPROCS_FROM_CLE)
+        self.ui.textloaderBox.setChecked(get_memory_type() == TEXT_GOT_FROM_CLE)
+        self.ui.gotloaderBox.setChecked(get_memory_type() == ONLY_GOT_FROM_CLE)
+        self.ui.execallBox.setChecked(get_memory_type() == GET_ALL_DISCARD_CLE)
         
         self.fh = PythonHighlighter(self.ui.findCondEdit.document())
         self.ah = PythonHighlighter(self.ui.avoidCondEdit.document())
@@ -222,12 +223,14 @@ class IDAngrExecDialog(QtWidgets.QDialog):
         dialog = IDAngrExecDialog()
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
-            if dialog.ui.textloaderBox.isChecked():
-                set_memory_type(TEXT_SIMPROCS_FROM_LOADER)
+            if dialog.ui.simprocsBox.isChecked():
+                set_memory_type(SIMPROCS_FROM_CLE)
+            elif dialog.ui.textloaderBox.isChecked():
+                set_memory_type(TEXT_GOT_FROM_CLE)
             elif dialog.ui.gotloaderBox.isChecked():
-                set_memory_type(ONLY_SIMPROCS_FROM_LOADER)
+                set_memory_type(ONLY_GOT_FROM_CLE)
             elif dialog.ui.execallBox.isChecked():
-                set_memory_type(EXECUTE_ALL_DISCARD_LOADER)
+                set_memory_type(GET_ALL_DISCARD_CLE)
             
             if dialog.ui.useFindCondBox.isChecked():
                 code = dialog.ui.findCondEdit.toPlainText()
