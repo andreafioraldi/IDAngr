@@ -2,9 +2,8 @@ from idaapi import PluginForm
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
-from core import *
 from ui import *
-from context import *
+from angrdbg import *
 
 import angr
 import claripy
