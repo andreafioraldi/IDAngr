@@ -71,11 +71,14 @@ Python>idc.GetRegValue("esi")
 
 See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) folder.
 
+## Other Debuggers
+
+If you want to use angr in other debuggers looks at [angrdbg](https://github.com/andreafioraldi/angrdbg)
+
 ## TODO
 + add predefined constraints collection to gui
 + add support to angr data dependence graph integration in the ida view
 + add an iphyton shell to manually change the value in the gui
 + add a taint engine based on intel pin
-+ create abstract classes to work with different debuggers (radare2 coming soon!) (new repo)
 
 
