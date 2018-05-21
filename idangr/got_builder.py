@@ -6,10 +6,10 @@ def build_mixed_got(proj, state):
     got_seg = idaapi.get_segm_by_name(proj.arch.got_section_name)
     plt_seg = idaapi.get_segm_by_name(".plt")
     
-    if got_seg == None:
+    if got_seg is None:
         print "IDAngr: cannot find .got.plt section"
         return state
-    if plt_seg == None:
+    if plt_seg is None:
         print "IDAngr: cannot find .plt section"
         return state
     
@@ -18,14 +18,14 @@ def build_mixed_got(proj, state):
     
     got_start = got_seg.start_ea
     
+    got_start += 3*entry_len # skip first 3 entries
+    
     '''
     print "## angr got - before ##"
-    for a in xrange(got_start, got_end, entry_len):
+    for a in xrange(got_start, got_seg.end_ea, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
     '''
-    
-    got_start += 3*entry_len # skip first 3 entries
     
     for a in xrange(got_start, got_seg.end_ea, entry_len):
         state_val = state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved)
@@ -43,7 +43,7 @@ def build_mixed_got(proj, state):
                         
     '''
     print "## angr got - final ##"
-    for a in xrange(got_start, got_end, entry_len):
+    for a in xrange(got_start, got_seg.end_ea, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
     '''
@@ -55,10 +55,10 @@ def build_bind_now_got(proj, state):
     got_seg = idaapi.get_segm_by_name(proj.arch.got_section_name)
     plt_seg = idaapi.get_segm_by_name(".plt")
     
-    if got_seg == None:
+    if got_seg is None:
         print "IDAngr: cannot find .got.plt section"
         return state
-    if plt_seg == None:
+    if plt_seg is None:
         print "IDAngr: cannot find .plt section"
         return state
     
@@ -67,14 +67,14 @@ def build_bind_now_got(proj, state):
     
     got_start = got_seg.start_ea
     
+    got_start += 3*entry_len # skip first 3 entries
+    
     '''
     print "## angr got - before ##"
-    for a in xrange(got_start, got_end, entry_len):
+    for a in xrange(got_start, got_seg.end_ea, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
     '''
-    
-    got_start += 3*entry_len # skip first 3 entries
     
     for a in xrange(got_start, got_seg.end_ea, entry_len):
         state_val = state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved)
@@ -91,7 +91,7 @@ def build_bind_now_got(proj, state):
                         
     '''
     print "## angr got - final ##"
-    for a in xrange(got_start, got_end, entry_len):
+    for a in xrange(got_start, got_seg.end_ea, entry_len):
         print "0x%x:  0x%x" % (a, state.solver.eval(getattr(state.mem[a], "uint%d_t" % proj.arch.bits).resolved))
     print
     '''

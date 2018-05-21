@@ -1,5 +1,5 @@
 from memory import SimSymbolicIdaMemory
-from context import load_project, get_memory_type, SIMPROCS_FROM_CLE, ONLY_GOT_FROM_CLE, GET_ALL_DISCARD_CLE
+from context import load_project, set_memory_type, get_memory_type, SIMPROCS_FROM_CLE, ONLY_GOT_FROM_CLE, GET_ALL_DISCARD_CLE
 from brk import get_linux_brk
 from got_builder import build_mixed_got
 
@@ -36,6 +36,7 @@ def StateShot():
         if project.arch.name in ("AMD64", "X86"):
             state.posix.set_brk(get_linux_brk())
         
+        print "Memory type: %d" % get_memory_type()
         if get_memory_type() == SIMPROCS_FROM_CLE:
             set_memory_type(ONLY_GOT_FROM_CLE)
             # insert simprocs when possible or resolve the symbol
