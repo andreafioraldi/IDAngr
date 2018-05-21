@@ -14,16 +14,18 @@ note: to install angr on Windows without compiling it look [here](https://github
 
 1. Load the idangr_core.py script from the ida menu
 2. During the debug create an instance of StateManager or StateShot
-3. Do things with angr
+3. Do stuffs with angr
 4. Return to 2 or exit
 
 ## GUI
 
-The idangr_gui.py script must be loaded during debugging.
+The idangr_gui.py script must be loaded during the debug.
 
 IDAngr adds a panel with a self explanatory interface.
 
 You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
+
+Explore other useful context menus in the panel with the rigth-click on items.
 
 [![youtube_img](/images/youtube.png)](https://www.youtube.com/watch?v=orFYI9C1KqE)
 

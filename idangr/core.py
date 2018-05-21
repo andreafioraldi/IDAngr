@@ -145,5 +145,11 @@ class StateManager(object):
                 #print ee
         return ret
         
-
+    def print_symbolics(self):
+        for key in self.symbolics:
+            k = key
+            if type(key) == int or type(key) == long: 
+                k = "0x%x" % key
+            print k, " ==>", self.symbolics[key]
+    
 
