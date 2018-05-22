@@ -77,6 +77,8 @@ See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) fo
 
 If you want to use angr in other debuggers looks at [angrdbg](https://github.com/andreafioraldi/angrdbg)
 
+I'va also made an almost equal plugin for GDB: [angrgdb](https://github.com/andreafioraldi/angrgdb)
+
 ## TODO
 + add predefined constraints collection to gui
 + add support to angr data dependence graph integration in the ida view
