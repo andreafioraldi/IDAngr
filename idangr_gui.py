@@ -1,8 +1,4 @@
-from idangr import *
-from idangr.gui import *
+import idangr
+import idangr.gui
 
-import angr
-import claripy
-
-idangr_panel_show()
-
+idangr.gui.idangr_panel_show()
