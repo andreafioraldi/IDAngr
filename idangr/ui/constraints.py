@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'constraints.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_IDAngrConstraintsDialog(object):
     def setupUi(self, IDAngrConstraintsDialog):
         IDAngrConstraintsDialog.setObjectName("IDAngrConstraintsDialog")
-        IDAngrConstraintsDialog.resize(1168, 875)
+        IDAngrConstraintsDialog.resize(701, 551)
         self.gridLayout = QtWidgets.QGridLayout(IDAngrConstraintsDialog)
         self.gridLayout.setObjectName("gridLayout")
         self.constrEdit = QtWidgets.QPlainTextEdit(IDAngrConstraintsDialog)

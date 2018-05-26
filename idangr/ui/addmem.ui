@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>464</width>
-    <height>284</height>
+    <width>440</width>
+    <height>251</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>231</y>
+     <x>70</x>
+     <y>210</y>
      <width>361</width>
      <height>41</height>
     </rect>
@@ -34,7 +34,7 @@
     <rect>
      <x>10</x>
      <y>50</y>
-     <width>441</width>
+     <width>421</width>
      <height>41</height>
     </rect>
    </property>
@@ -73,7 +73,7 @@
     <rect>
      <x>10</x>
      <y>150</y>
-     <width>441</width>
+     <width>421</width>
      <height>41</height>
     </rect>
    </property>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'panel.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ class Ui_IDAngrPanel(object):
     def setupUi(self, IDAngrPanel):
         IDAngrPanel.setObjectName("IDAngrPanel")
         IDAngrPanel.setEnabled(True)
-        IDAngrPanel.resize(1544, 1060)
+        IDAngrPanel.resize(926, 703)
         IDAngrPanel.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.gridLayout_6 = QtWidgets.QGridLayout(IDAngrPanel)
         self.gridLayout_6.setObjectName("gridLayout_6")
@@ -56,6 +56,7 @@ class Ui_IDAngrPanel(object):
         self.layoutWidget = QtWidgets.QWidget(self.splitter_2)
         self.layoutWidget.setObjectName("layoutWidget")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.layoutWidget)
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.label_3 = QtWidgets.QLabel(self.layoutWidget)
         self.label_3.setObjectName("label_3")
@@ -68,6 +69,7 @@ class Ui_IDAngrPanel(object):
         self.layoutWidget_2 = QtWidgets.QWidget(self.splitter_2)
         self.layoutWidget_2.setObjectName("layoutWidget_2")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.layoutWidget_2)
+        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.label_4 = QtWidgets.QLabel(self.layoutWidget_2)
         self.label_4.setObjectName("label_4")
@@ -84,34 +86,34 @@ class Ui_IDAngrPanel(object):
         self.widget.setObjectName("widget")
         self.resetBtn = QtWidgets.QPushButton(self.widget)
         self.resetBtn.setEnabled(True)
-        self.resetBtn.setGeometry(QtCore.QRect(10, 10, 121, 45))
+        self.resetBtn.setGeometry(QtCore.QRect(10, 10, 85, 27))
         self.resetBtn.setObjectName("resetBtn")
         self.runBtn = QtWidgets.QPushButton(self.widget)
         self.runBtn.setEnabled(True)
-        self.runBtn.setGeometry(QtCore.QRect(140, 10, 121, 45))
+        self.runBtn.setGeometry(QtCore.QRect(100, 10, 85, 27))
         self.runBtn.setObjectName("runBtn")
         self.todbgBtn = QtWidgets.QPushButton(self.widget)
         self.todbgBtn.setEnabled(False)
-        self.todbgBtn.setGeometry(QtCore.QRect(400, 10, 121, 45))
+        self.todbgBtn.setGeometry(QtCore.QRect(280, 10, 85, 27))
         self.todbgBtn.setObjectName("todbgBtn")
         self.viewFileBtn = QtWidgets.QPushButton(self.widget)
         self.viewFileBtn.setEnabled(False)
-        self.viewFileBtn.setGeometry(QtCore.QRect(690, 10, 201, 45))
+        self.viewFileBtn.setGeometry(QtCore.QRect(500, 10, 122, 27))
         self.viewFileBtn.setObjectName("viewFileBtn")
         self.filesBox = QtWidgets.QSpinBox(self.widget)
-        self.filesBox.setGeometry(QtCore.QRect(580, 10, 96, 43))
+        self.filesBox.setGeometry(QtCore.QRect(400, 10, 91, 27))
         self.filesBox.setObjectName("filesBox")
         self.nextBtn = QtWidgets.QPushButton(self.widget)
         self.nextBtn.setEnabled(False)
-        self.nextBtn.setGeometry(QtCore.QRect(270, 10, 121, 45))
+        self.nextBtn.setGeometry(QtCore.QRect(190, 10, 85, 27))
         self.nextBtn.setObjectName("nextBtn")
         self.loadBtn = QtWidgets.QPushButton(self.widget)
         self.loadBtn.setEnabled(True)
-        self.loadBtn.setGeometry(QtCore.QRect(960, 10, 121, 45))
+        self.loadBtn.setGeometry(QtCore.QRect(670, 10, 85, 27))
         self.loadBtn.setObjectName("loadBtn")
         self.saveBtn = QtWidgets.QPushButton(self.widget)
         self.saveBtn.setEnabled(True)
-        self.saveBtn.setGeometry(QtCore.QRect(1090, 10, 121, 45))
+        self.saveBtn.setGeometry(QtCore.QRect(760, 10, 85, 27))
         self.saveBtn.setObjectName("saveBtn")
         self.gridLayout_6.addWidget(self.widget, 0, 0, 1, 1)
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'execute.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_IDAngrExecDialog(object):
     def setupUi(self, IDAngrExecDialog):
         IDAngrExecDialog.setObjectName("IDAngrExecDialog")
-        IDAngrExecDialog.resize(1396, 1073)
+        IDAngrExecDialog.resize(994, 634)
         self.gridLayout_4 = QtWidgets.QGridLayout(IDAngrExecDialog)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayout_3 = QtWidgets.QGridLayout()
@@ -39,6 +39,7 @@ class Ui_IDAngrExecDialog(object):
         self.layoutWidget = QtWidgets.QWidget(self.splitter)
         self.layoutWidget.setObjectName("layoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
         self.useFindCondBox = QtWidgets.QCheckBox(self.layoutWidget)
         self.useFindCondBox.setObjectName("useFindCondBox")
@@ -50,6 +51,7 @@ class Ui_IDAngrExecDialog(object):
         self.layoutWidget1 = QtWidgets.QWidget(self.splitter)
         self.layoutWidget1.setObjectName("layoutWidget1")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.layoutWidget1)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_2.setObjectName("gridLayout_2")
         self.useAvoidCondBox = QtWidgets.QCheckBox(self.layoutWidget1)
         self.useAvoidCondBox.setObjectName("useAvoidCondBox")

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1287</width>
-    <height>859</height>
+    <width>941</width>
+    <height>569</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>800</y>
+     <x>-220</x>
+     <y>530</y>
      <width>1141</width>
      <height>41</height>
     </rect>
@@ -40,8 +40,8 @@
     <rect>
      <x>10</x>
      <y>20</y>
-     <width>351</width>
-     <height>761</height>
+     <width>271</width>
+     <height>501</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -57,10 +57,10 @@
   <widget class="QPlainTextEdit" name="codeView">
    <property name="geometry">
     <rect>
-     <x>380</x>
+     <x>290</x>
      <y>20</y>
-     <width>881</width>
-     <height>761</height>
+     <width>641</width>
+     <height>501</height>
     </rect>
    </property>
    <property name="readOnly">
