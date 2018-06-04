@@ -1,4 +1,4 @@
-import idaapi
+
 
 class IDAngrPlugin(idaapi.plugin_t):
     flags = idaapi.PLUGIN_KEEP
@@ -24,8 +24,15 @@ class IDAngrPlugin(idaapi.plugin_t):
         idaapi.msg("IDAngr plugin: terminated\n")
 
     def openPanel(self):
-        from idangr.gui import idangr_panel_show
-        idangr_panel_show()
+        import idangr
+        import idangr.gui_init
+        if idangr.has_modules():
+            import idangr.gui
+            idangr.gui.idangr_panel_show()
+        else:
+            if idangr.gui_init.IDAngrConnectDialog.go():
+                import idangr.gui
+                idangr.gui.idangr_panel_show()
 
 
 def PLUGIN_ENTRY():

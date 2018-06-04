@@ -19,6 +19,11 @@ _claripy_module = None
 _pyvex_module = None
 _angrdbg_module = None
 
+
+def has_modules():
+    return _angrdbg_module != None
+
+
 def remote(host="localhost", port=DEFAULT_SERVER_PORT):
     srv = rpyc.classic.connect(host, port=port) #server
     cl = rpyc.classic.connect(host, port=port) #client
