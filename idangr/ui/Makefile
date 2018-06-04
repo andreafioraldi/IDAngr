@@ -1,4 +1,7 @@
-all: panel.py addmem.py execute.py viewer.py constraints.py saveds.py
+all: connect.py panel.py addmem.py execute.py viewer.py constraints.py saveds.py
+
+connect.py: %.py: %.ui
+	pyuic5 connect.ui -o connect.py
 
 panel.py: %.py: %.ui
 	pyuic5 panel.ui -o panel.py
