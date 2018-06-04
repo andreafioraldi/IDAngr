@@ -37,9 +37,12 @@ def build_mixed_got(proj, state):
                 if dbg_val >= plt_seg.end_ea or dbg_val < plt_seg.start_ea: # already resolved by the loader in the dbg
                     setattr(state.mem[a], "uint%d_t" % proj.arch.bits, dbg_val)
                 else:
-                    ea = idaapi.get_debug_name_ea(name)
-                    if ea != idaapi.BADADDR:
-                        setattr(state.mem[a], "uint%d_t" % proj.arch.bits, ea)
+                    try:
+                        ea = idaapi.get_debug_name_ea(name)
+                        if ea != idaapi.BADADDR:
+                            setattr(state.mem[a], "uint%d_t" % proj.arch.bits, ea)
+                    except Exception as ee:
+                        print "error: build_mixed_got:", ee
                         
     '''
     print "## angr got - final ##"
