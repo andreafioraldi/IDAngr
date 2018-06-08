@@ -87,6 +87,9 @@
    <property name="text">
     <string>Save configuration</string>
    </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QCheckBox" name="localBox">
    <property name="geometry">

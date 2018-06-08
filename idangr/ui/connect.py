@@ -31,6 +31,7 @@ class Ui_IDAngrConnectDialog(object):
         self.label_2.setObjectName("label_2")
         self.saveBox = QtWidgets.QCheckBox(IDAngrConnectDialog)
         self.saveBox.setGeometry(QtCore.QRect(20, 160, 181, 22))
+        self.saveBox.setChecked(False)
         self.saveBox.setObjectName("saveBox")
         self.localBox = QtWidgets.QCheckBox(IDAngrConnectDialog)
         self.localBox.setGeometry(QtCore.QRect(20, 190, 181, 22))
