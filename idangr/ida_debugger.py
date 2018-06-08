@@ -259,7 +259,10 @@ class IdaLocalDebugger(object):
     
     #-------------------------------------
     def resolve_name(self, name): #return None on fail
-        return idaapi.get_debug_name_ea(name)
+        try:
+            return idaapi.get_debug_name_ea(name)
+        except:
+            return None
 
 
 
