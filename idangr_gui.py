@@ -1,6 +1,4 @@
 import idangr
-import idangr.gui_init
+import idangr.gui
 
-if idangr.gui_init.IDAngrConnectDialog.go():
-    import idangr.gui
-    idangr.gui.idangr_panel_show()
+idangr.gui.idangr_panel_show()

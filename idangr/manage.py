@@ -12,7 +12,17 @@ def _angr_not_installed():
     e += "  $ pip install angrdbg\n\n"
     raise AngrDbgNotInstalled(e)
 
+_initialized = False
+
+def is_initialized():
+    global _initialized
+    return _initialized
+
 _conn = None
+
+def is_remote():
+    global _conn
+    return _conn is not None
 
 _angr_module = None
 _claripy_module = None
@@ -81,7 +91,7 @@ def get_angrdbg():
 
 
 def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT):
-    global _conn, _angr_module, _claripy_module, _pyvex_module, _angrdbg_module
+    global _conn, _angr_module, _claripy_module, _pyvex_module, _angrdbg_module, _initialized
     if _conn != None:
         _conn.close()
     _conn = None
@@ -121,7 +131,18 @@ def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT):
     if is_remote:
         thread.start_new_thread(_conn[1].serve_all, tuple())
         #_conn.serve_all()
-        
+    
+    _initialized = True
+
+
+def remote_exec(code):
+    global _conn
+    return _conn[0].execute(code)
+
+def remote_eval(code):
+    global _conn
+    return _conn[0].eval(code)
+
 
 def close():
     global _conn

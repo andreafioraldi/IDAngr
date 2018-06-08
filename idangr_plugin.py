@@ -25,14 +25,8 @@ class IDAngrPlugin(idaapi.plugin_t):
 
     def openPanel(self):
         import idangr
-        import idangr.gui_init
-        if idangr.has_modules():
-            import idangr.gui
-            idangr.gui.idangr_panel_show()
-        else:
-            if idangr.gui_init.IDAngrConnectDialog.go():
-                import idangr.gui
-                idangr.gui.idangr_panel_show()
+        import idangr.gui
+        idangr.gui.idangr_panel_show()
 
 
 def PLUGIN_ENTRY():

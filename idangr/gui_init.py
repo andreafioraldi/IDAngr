@@ -30,3 +30,8 @@ class IDAngrConnectDialog(QtWidgets.QDialog):
             return True
         return False
 
+
+def setup_loop():
+    if not manage.is_initialized():
+        while not IDAngrConnectDialog.go():
+            pass

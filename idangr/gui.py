@@ -1,3 +1,7 @@
+from gui_init import setup_loop
+
+setup_loop()
+
 from idaapi import PluginForm
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
@@ -16,6 +20,8 @@ import glob
 import sip
 import pickle
 import os
+
+import manage
 
 class IDAngrCtx(object):
     def __init__(self):
@@ -188,7 +194,10 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
             for line in code.split("\n"):
                 func += "\t" + line + "\n"
             try:
-                exec(func) in globals()
+                if manage.is_remote():
+                    manage.remote_exec(func)
+                else:
+                    exec(func) in globals()
             except Exception as ee:
                 QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints Code - Python Error', str(ee)).exec_()
             _idangr_ctx.constraints[item] = (code, constr_func)
@@ -237,12 +246,20 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                 finds = _idangr_ctx.find
                 avoids = _idangr_ctx.avoid
                 try:
-                    exec(code) in locals()
+                    if manage.is_remote():
+                        manage.remote_exec("finds = %s" % repr(finds))
+                        manage.remote_exec("avoids = %s" % repr(finds))
+                        manage.remote_exec(code)
+                    else:
+                        exec(code) in locals()
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Find Condition - Python Error', str(ee)).exec_()
                     return None
                 try:
-                    find = find_cond
+                    if manage.is_remote():
+                        find = manage.remote_eval("find_cond")
+                    else:
+                        find = find_cond
                 except:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "find_cond not defined").exec_()
                     return None
@@ -254,12 +271,20 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                 finds = _idangr_ctx.find
                 avoids = _idangr_ctx.avoid
                 try:
-                    exec(code) in locals()
+                    if manage.is_remote():
+                        manage.remote_exec("finds = %s" % repr(finds))
+                        manage.remote_exec("avoids = %s" % repr(finds))
+                        manage.remote_exec(code)
+                    else:
+                        exec(code) in locals()
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Avoid Condition - Python Error', str(ee)).exec_()
                     return None
                 try:
-                    avoid = avoid_cond
+                    if manage.is_remote():
+                        avoid = manage.remote_eval("avoid_cond")
+                    else:
+                        avoid = avoid_cond
                 except:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "avoid_cond not defined").exec_()
                     return None
