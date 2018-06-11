@@ -218,7 +218,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
 
         self.ui.simprocsBox.setChecked(get_memory_type() == SIMPROCS_FROM_CLE)
-        self.ui.textloaderBox.setChecked(get_memory_type() == TEXT_GOT_FROM_CLE)
+        self.ui.textloaderBox.setChecked(get_memory_type() == USE_CLE_MEMORY)
         self.ui.gotloaderBox.setChecked(get_memory_type() == ONLY_GOT_FROM_CLE)
         self.ui.execallBox.setChecked(get_memory_type() == GET_ALL_DISCARD_CLE)
         
@@ -234,7 +234,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             if dialog.ui.simprocsBox.isChecked():
                 set_memory_type(SIMPROCS_FROM_CLE)
             elif dialog.ui.textloaderBox.isChecked():
-                set_memory_type(TEXT_GOT_FROM_CLE)
+                set_memory_type(USE_CLE_MEMORY)
             elif dialog.ui.gotloaderBox.isChecked():
                 set_memory_type(ONLY_GOT_FROM_CLE)
             elif dialog.ui.execallBox.isChecked():
@@ -403,8 +403,12 @@ class IDAngrPanelForm(PluginForm):
         if conds == None:
             return
         
-        #TODO check if debugger is running
-        _idangr_ctx.stateman = StateManager()
+        try:
+            _idangr_ctx.stateman = StateManager()
+        except Exception as ee:
+            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'StateManager - Python Error', str(ee)).exec_()
+            return
+        
         for e in _idangr_ctx.simregs:
             _idangr_ctx.stateman.sim(e[0])
             if e[0] in _idangr_ctx.constraints:
@@ -769,7 +773,6 @@ def idangr_panel_show():
     _idangr_panel.Show()
 
 if __name__ == "__main__":
-    print __name__
     idangr_panel_show()
 
 

@@ -38,7 +38,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Get only the .got section from the angr loader to use default simprocedures insted of executing library code.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>get entire .got from CLE</string>
+        <string>get entire .got from CLE (with stubs)</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -51,7 +51,7 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load the executable memory (.text, .rodata, .got ...) from the angr loader, faster but can't work with self modifying code and libraries loaded from the debugger will be not executed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>get .text and .got from CLE</string>
+        <string>get binary memory from CLE</string>
        </property>
        <property name="checked">
         <bool>false</bool>
