@@ -142,13 +142,21 @@ class IdaRemoteDebugger(object):
         perms |= SEG_PROT_X if ida_seg.perm & idaapi.SEGPERM_EXEC else 0
         return self.angrdbg_mod.Segment(ida_seg.name, ida_seg.start_ea, ida_seg.end_ea, perms)
 
-    def seg_is_got(self, seg):
-        #return seg.start == idaapi.get_segm_by_name(self.angrdbg_mod.load_project().arch.got_section_name).start_ea
-        return seg.start == idaapi.get_segm_by_name(".got.plt").start_ea
+    def get_got(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(".got.plt")
+        return (ida_seg.start_ea, ida_seg.end_ea)
+    
+    def get_plt(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(".plt")
+        return (ida_seg.start_ea, ida_seg.end_ea)
+    
     
     #-------------------------------------
     def resolve_name(self, name): #return None on fail
-        return idaapi.get_debug_name_ea(name)
+        try:
+            return idaapi.get_debug_name_ea(name)
+        except:
+            return None
 
 
 
@@ -254,8 +262,13 @@ class IdaLocalDebugger(object):
         perms |= SEG_PROT_X if ida_seg.perm & idaapi.SEGPERM_EXEC else 0
         return self.angrdbg_mod.Segment(ida_seg.name, ida_seg.start_ea, ida_seg.end_ea, perms)
 
-    def seg_is_got(self, seg):
-        return seg.start == idaapi.get_segm_by_name(self.angrdbg_mod.load_project().arch.got_section_name).start_ea
+    def get_got(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(self.angrdbg_mod.load_project().arch.got_section_name)
+        return (ida_seg.start_ea, ida_seg.end_ea)
+    
+    def get_plt(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(".plt")
+        return (ida_seg.start_ea, ida_seg.end_ea)
     
     #-------------------------------------
     def resolve_name(self, name): #return None on fail
