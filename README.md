@@ -10,20 +10,17 @@ Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a st
 
 note: to install angr on Windows without compiling it look [here](https://github.com/andreafioraldi/angr-win64-wheels)
 
-## Usage
-
-1. Load the idangr_core.py script from the ida menu
-2. During the debug create an instance of StateManager or StateShot
-3. Do things with angr
-4. Return to 2 or exit
-
 ## GUI
 
-The idangr_gui.py script must be loaded during debugging.
+The idangr_gui.py script must be loaded during the debug.
+
+Firstly you must choose if use angr in the local machine or attach IDA to a remote angrdbg server.
 
 IDAngr adds a panel with a self explanatory interface.
 
 You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
+
+Explore other useful context menus in the panel with the rigth-click on items.
 
 [![youtube_img](/images/youtube.png)](https://www.youtube.com/watch?v=orFYI9C1KqE)
 
@@ -32,6 +29,12 @@ You can set find/avoid addresses and symbolic memory directly from the context m
 You can install indagr as a plugin (see [INSTALL.md](INSTALL.md)), to activate it press Ctrl+Alt+I.
 
 ## Api
+
+IDAngr implements the [angrdbg](https://github.com/andreafioraldi/angrdbg) api in the IDA debugger.
+
+Use `idangr.init` to setup the library and access to the following api.
+
+With `idangr.init(True, HOST, PORT)` you can connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`)
 
 #### StateShot
 
@@ -71,11 +74,16 @@ Python>idc.GetRegValue("esi")
 
 See [examples](https://github.com/andreafioraldi/IDAngr/tree/master/examples) folder.
 
+## Other Debuggers
+
+If you want to use angr in other debuggers looks at [angrdbg](https://github.com/andreafioraldi/angrdbg)
+
+I'va also made an almost equal plugin for GDB: [angrgdb](https://github.com/andreafioraldi/angrgdb)
+
 ## TODO
 + add predefined constraints collection to gui
 + add support to angr data dependence graph integration in the ida view
 + add an iphyton shell to manually change the value in the gui
 + add a taint engine based on intel pin
-+ create abstract classes to work with different debuggers (radare2 coming soon!) (new repo)
 
 
