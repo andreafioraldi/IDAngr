@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1544</width>
-    <height>1060</height>
+    <width>926</width>
+    <height>703</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -167,8 +167,8 @@
        <rect>
         <x>10</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -181,10 +181,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>140</x>
+        <x>100</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -197,10 +197,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>400</x>
+        <x>280</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -213,10 +213,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>690</x>
+        <x>500</x>
         <y>10</y>
-        <width>201</width>
-        <height>45</height>
+        <width>122</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -226,10 +226,10 @@
      <widget class="QSpinBox" name="filesBox">
       <property name="geometry">
        <rect>
-        <x>580</x>
+        <x>400</x>
         <y>10</y>
-        <width>96</width>
-        <height>43</height>
+        <width>91</width>
+        <height>27</height>
        </rect>
       </property>
      </widget>
@@ -239,10 +239,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>270</x>
+        <x>190</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -255,10 +255,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>960</x>
+        <x>670</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">
@@ -271,10 +271,10 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>1090</x>
+        <x>760</x>
         <y>10</y>
-        <width>121</width>
-        <height>45</height>
+        <width>85</width>
+        <height>27</height>
        </rect>
       </property>
       <property name="text">

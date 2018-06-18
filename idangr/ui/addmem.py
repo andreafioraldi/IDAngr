@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'addmem.ui'
 #
-# Created by: PyQt5 UI code generator 5.5.1
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,14 +11,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_IDAngrAddMem(object):
     def setupUi(self, IDAngrAddMem):
         IDAngrAddMem.setObjectName("IDAngrAddMem")
-        IDAngrAddMem.resize(464, 284)
+        IDAngrAddMem.resize(440, 251)
         self.buttonBox = QtWidgets.QDialogButtonBox(IDAngrAddMem)
-        self.buttonBox.setGeometry(QtCore.QRect(90, 231, 361, 41))
+        self.buttonBox.setGeometry(QtCore.QRect(70, 210, 361, 41))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.addrTextEdit = QtWidgets.QPlainTextEdit(IDAngrAddMem)
-        self.addrTextEdit.setGeometry(QtCore.QRect(10, 50, 441, 41))
+        self.addrTextEdit.setGeometry(QtCore.QRect(10, 50, 421, 41))
         self.addrTextEdit.setPlainText("")
         self.addrTextEdit.setObjectName("addrTextEdit")
         self.label = QtWidgets.QLabel(IDAngrAddMem)
@@ -28,7 +28,7 @@ class Ui_IDAngrAddMem(object):
         self.label_2.setGeometry(QtCore.QRect(10, 110, 108, 33))
         self.label_2.setObjectName("label_2")
         self.lenTextEdit = QtWidgets.QPlainTextEdit(IDAngrAddMem)
-        self.lenTextEdit.setGeometry(QtCore.QRect(10, 150, 441, 41))
+        self.lenTextEdit.setGeometry(QtCore.QRect(10, 150, 421, 41))
         self.lenTextEdit.setPlainText("")
         self.lenTextEdit.setObjectName("lenTextEdit")
 

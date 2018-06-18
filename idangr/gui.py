@@ -1,10 +1,13 @@
+from gui_init import setup_loop
+
+setup_loop()
+
 from idaapi import PluginForm
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 
-from core import *
 from ui import *
-from context import *
+from angrdbg import *
 
 import angr
 import claripy
@@ -17,6 +20,8 @@ import glob
 import sip
 import pickle
 import os
+
+import manage
 
 class IDAngrCtx(object):
     def __init__(self):
@@ -189,7 +194,10 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
             for line in code.split("\n"):
                 func += "\t" + line + "\n"
             try:
-                exec(func) in globals()
+                if manage.is_remote():
+                    manage.remote_exec(func)
+                else:
+                    exec(func) in globals()
             except Exception as ee:
                 QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints Code - Python Error', str(ee)).exec_()
             _idangr_ctx.constraints[item] = (code, constr_func)
@@ -210,7 +218,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             self.ui.avoidCondEdit.setPlainText(_idangr_ctx.avoid_lambda)
 
         self.ui.simprocsBox.setChecked(get_memory_type() == SIMPROCS_FROM_CLE)
-        self.ui.textloaderBox.setChecked(get_memory_type() == TEXT_GOT_FROM_CLE)
+        self.ui.textloaderBox.setChecked(get_memory_type() == USE_CLE_MEMORY)
         self.ui.gotloaderBox.setChecked(get_memory_type() == ONLY_GOT_FROM_CLE)
         self.ui.execallBox.setChecked(get_memory_type() == GET_ALL_DISCARD_CLE)
         
@@ -226,7 +234,7 @@ class IDAngrExecDialog(QtWidgets.QDialog):
             if dialog.ui.simprocsBox.isChecked():
                 set_memory_type(SIMPROCS_FROM_CLE)
             elif dialog.ui.textloaderBox.isChecked():
-                set_memory_type(TEXT_GOT_FROM_CLE)
+                set_memory_type(USE_CLE_MEMORY)
             elif dialog.ui.gotloaderBox.isChecked():
                 set_memory_type(ONLY_GOT_FROM_CLE)
             elif dialog.ui.execallBox.isChecked():
@@ -238,12 +246,20 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                 finds = _idangr_ctx.find
                 avoids = _idangr_ctx.avoid
                 try:
-                    exec(code) in locals()
+                    if manage.is_remote():
+                        manage.remote_exec("finds = %s" % repr(finds))
+                        manage.remote_exec("avoids = %s" % repr(finds))
+                        manage.remote_exec(code)
+                    else:
+                        exec(code) in locals()
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Find Condition - Python Error', str(ee)).exec_()
                     return None
                 try:
-                    find = find_cond
+                    if manage.is_remote():
+                        find = manage.remote_eval("find_cond")
+                    else:
+                        find = find_cond
                 except:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "find_cond not defined").exec_()
                     return None
@@ -255,12 +271,20 @@ class IDAngrExecDialog(QtWidgets.QDialog):
                 finds = _idangr_ctx.find
                 avoids = _idangr_ctx.avoid
                 try:
-                    exec(code) in locals()
+                    if manage.is_remote():
+                        manage.remote_exec("finds = %s" % repr(finds))
+                        manage.remote_exec("avoids = %s" % repr(finds))
+                        manage.remote_exec(code)
+                    else:
+                        exec(code) in locals()
                 except Exception as ee:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Avoid Condition - Python Error', str(ee)).exec_()
                     return None
                 try:
-                    avoid = avoid_cond
+                    if manage.is_remote():
+                        avoid = manage.remote_eval("avoid_cond")
+                    else:
+                        avoid = avoid_cond
                 except:
                     QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Error', "avoid_cond not defined").exec_()
                     return None
@@ -379,8 +403,12 @@ class IDAngrPanelForm(PluginForm):
         if conds == None:
             return
         
-        #TODO check if debugger is running
-        _idangr_ctx.stateman = StateManager()
+        try:
+            _idangr_ctx.stateman = StateManager()
+        except Exception as ee:
+            QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'StateManager - Python Error', str(ee)).exec_()
+            return
+        
         for e in _idangr_ctx.simregs:
             _idangr_ctx.stateman.sim(e[0])
             if e[0] in _idangr_ctx.constraints:
@@ -745,7 +773,6 @@ def idangr_panel_show():
     _idangr_panel.Show()
 
 if __name__ == "__main__":
-    print __name__
     idangr_panel_show()
 
 

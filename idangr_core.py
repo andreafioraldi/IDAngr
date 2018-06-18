@@ -1,11 +1,9 @@
-import angr
-import claripy
-
-from idangr import *
+import idangr
 
 print
-print "########### IDAngr ###########"
-print "  usage: sm = StateManager()"
+print "################### IDAngr ###################"
+print "  usage: idangr.init(is_remote, host, port)"
+print "         import angrdbg"
 print
 
 
