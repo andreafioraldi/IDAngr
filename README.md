@@ -14,8 +14,6 @@ note: to install angr on Windows without compiling it look [here](https://github
 
 The idangr_gui.py script must be loaded during the debug.
 
-Firstly you must choose if use angr in the local machine or attach IDA to a remote angrdbg server.
-
 IDAngr adds a panel with a self explanatory interface.
 
 You can set find/avoid addresses and symbolic memory directly from the context menu in the IDA View.
