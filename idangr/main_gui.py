@@ -78,12 +78,12 @@ class IDAngrTextViewerForm(QtWidgets.QDialog):
         frm = IDAngrTextViewerForm(text, title)
         frm.exec_()
 
-class IDAngradd_memDialog(QtWidgets.QDialog):
+class IDAngrAddMemDialog(QtWidgets.QDialog):
     
     def __init__(self):
         QtWidgets.QDialog.__init__(self)
         
-        self.ui = Ui_IDAngradd_mem()
+        self.ui = Ui_IDAngrAddMem()
         self.ui.setupUi(self)
         
         self.ui.lenTextEdit.setText(str(load_project().arch.bits / 8))
@@ -95,7 +95,7 @@ class IDAngradd_memDialog(QtWidgets.QDialog):
     
     @staticmethod
     def get_mem(addr):
-        dialog = IDAngradd_memDialog()
+        dialog = IDAngrAddMemDialog()
         dialog.set_addr(addr)
         r = dialog.exec_()
         if r == QtWidgets.QDialog.Accepted:
@@ -733,7 +733,7 @@ class IDAngrActionHandler(idaapi.action_handler_t):
             addr = idaapi.get_screen_ea()
             #if addr in _idangr_ctx.simmem:
             #    return
-            m = IDAngradd_memDialog.get_mem(addr)
+            m = IDAngrAddMemDialog.get_mem(addr)
             if m != None:
                 _idangr_panel.add_mem(m[0], m[1])
                 #_idangr_ctx.simmem.append(m)
@@ -750,8 +750,6 @@ class IDAngrHooks(idaapi.UI_Hooks):
         idaapi.attach_action_to_popup(form, popup, "Avoid", "IDAngr/")
         idaapi.attach_action_to_popup(form, popup, "Symbolic", "IDAngr/")
 
-
-print "######### IDAngr GUI #########"
 
 idaapi.register_action(idaapi.action_desc_t('Find', 'Find', IDAngrActionHandler("Find")))
 idaapi.register_action(idaapi.action_desc_t('Avoid', 'Avoid', IDAngrActionHandler("Avoid")))

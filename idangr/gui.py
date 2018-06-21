@@ -1,5 +1,7 @@
 import manage
 
+print "######### IDAngr GUI #########"
+
 def show():
     if not manage.is_initialized():
         from init_gui import IDAngrConnectDialog
