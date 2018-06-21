@@ -35,7 +35,7 @@ SEG_PROT_W = 2
 SEG_PROT_X = 1
 
 class IdaRemoteDebugger(object):
-    #must implement all methods of angrdbg.Debugger !!!
+    #must implements all methods of angrdbg.Debugger !!!
     
     def __init__(self, angrdbg_mod):
         #self.get_byte = idaapi.get_byte
@@ -161,7 +161,7 @@ class IdaRemoteDebugger(object):
 
 
 class IdaLocalDebugger(object):
-    #must implement all methods of angrdbg.Debugger !!!
+    #must implements all methods of angrdbg.Debugger !!!
     
     def __init__(self, angrdbg_mod):
         #self.get_byte = idaapi.get_byte

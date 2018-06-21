@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>701</width>
-    <height>551</height>
+    <width>811</width>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Edit Constraints</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QPlainTextEdit" name="constrEdit">
      <property name="enabled">
@@ -22,7 +22,7 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <layout class="QFormLayout" name="formLayout">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QPushButton" name="savedsBtn">
        <property name="enabled">

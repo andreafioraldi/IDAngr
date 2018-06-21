@@ -33,8 +33,8 @@ class IDAngrConnectDialog(QtWidgets.QDialog):
                 self.ui.localBox.setChecked(config["local"])
         except: pass
         
-        self.ui.hostTxt.setPlainText(host)
-        self.ui.portTxt.setPlainText(str(port))
+        self.ui.hostTxt.setText(host)
+        self.ui.portTxt.setText(str(port))
         
     
     @staticmethod
@@ -44,8 +44,8 @@ class IDAngrConnectDialog(QtWidgets.QDialog):
         if r == QtWidgets.QDialog.Accepted:
             if dialog.ui.saveBox.isChecked():
                 config = {
-                    "host": dialog.ui.hostTxt.toPlainText(),
-                    "port": int(dialog.ui.portTxt.toPlainText()),
+                    "host": dialog.ui.hostTxt.displayText(),
+                    "port": int(dialog.ui.portTxt.displayText()),
                     "save": True,
                     "local": dialog.ui.localBox.isChecked()
                 }
@@ -53,19 +53,17 @@ class IDAngrConnectDialog(QtWidgets.QDialog):
                 with open(config_file, "w") as f:
                     json.dump(config, f, indent=4)
             
-            if dialog.ui.localBox.isChecked():
-                manage.init()
-            else:
-                manage.init(True, dialog.ui.hostTxt.toPlainText(), int(dialog.ui.portTxt.toPlainText()))
+            try:
+                if dialog.ui.localBox.isChecked():
+                    manage.init()
+                else:
+                    manage.init(True, dialog.ui.hostTxt.displayText(), int(dialog.ui.portTxt.displayText()))
+            except Exception as ee:
+                QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'IDAngr init error', str(ee)).exec_()
+                return False
+            
             return True
         return False
-
-
-def setup_loop():
-    if not manage.is_initialized():
-        while not IDAngrConnectDialog.go():
-            pass
-
 
 
 

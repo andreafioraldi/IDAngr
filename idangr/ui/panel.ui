@@ -156,10 +156,10 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>61</height>
+       <height>41</height>
       </size>
      </property>
-     <widget class="QPushButton" name="resetBtn">
+     <widget class="QToolButton" name="resetBtn">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -175,7 +175,7 @@
        <string>RESET</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="runBtn">
+     <widget class="QToolButton" name="runBtn">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -191,7 +191,7 @@
        <string>RUN</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="todbgBtn">
+     <widget class="QToolButton" name="todbgBtn">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -233,7 +233,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QPushButton" name="nextBtn">
+     <widget class="QToolButton" name="nextBtn">
       <property name="enabled">
        <bool>false</bool>
       </property>
@@ -249,7 +249,7 @@
        <string>NEXT</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="loadBtn">
+     <widget class="QToolButton" name="loadBtn">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -265,7 +265,7 @@
        <string>LOAD</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="saveBtn">
+     <widget class="QToolButton" name="saveBtn">
       <property name="enabled">
        <bool>true</bool>
       </property>

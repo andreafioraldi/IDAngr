@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_IDAngrExecDialog(object):
     def setupUi(self, IDAngrExecDialog):
         IDAngrExecDialog.setObjectName("IDAngrExecDialog")
-        IDAngrExecDialog.resize(994, 634)
+        IDAngrExecDialog.resize(996, 631)
         self.gridLayout_4 = QtWidgets.QGridLayout(IDAngrExecDialog)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayout_3 = QtWidgets.QGridLayout()
