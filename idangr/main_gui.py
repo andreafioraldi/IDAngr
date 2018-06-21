@@ -197,7 +197,12 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
                     exec(func) in globals()
             except Exception as ee:
                 QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'Constraints Code - Python Error', str(ee)).exec_()
-            _idangr_ctx.constraints[item] = (code, constr_func)
+                return
+            
+            if manage.is_remote():
+                _idangr_ctx.constraints[item] = (code, manage.remote_eval("constr_func"))
+            else:
+                _idangr_ctx.constraints[item] = (code, constr_func)
         
     
 class IDAngrExecDialog(QtWidgets.QDialog):
