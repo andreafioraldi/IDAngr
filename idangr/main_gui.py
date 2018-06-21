@@ -36,6 +36,10 @@ class IDAngrCtx(object):
 
 _idangr_ctx = IDAngrCtx()
 
+# indipendent from context
+_project_hooks = []
+
+
 def save_ctx(filename):
     global _idangr_ctx
     with open(filename, "wb") as fh:
@@ -77,6 +81,47 @@ class IDAngrTextViewerForm(QtWidgets.QDialog):
     def show_text(text, title=None):
         frm = IDAngrTextViewerForm(text, title)
         frm.exec_()
+
+
+class IDAngrEditorDialog(QtWidgets.QDialog):
+    
+    def __init__(self, title, text=""):
+        QtWidgets.QDialog.__init__(self)
+        
+        self.ui = Ui_IDAngrEditorDialog()
+        self.ui.setupUi(self)
+        
+        self.setWindowTitle("Editor - " + str(title))
+        
+        self.ui.codeEdit.setPlainText(text)
+        self.h = PythonHighlighter(self.ui.codeEdit.document())
+    
+    @staticmethod
+    def go(title, text=""):
+        dialog = IDAngrConstraintsDialog(title, text)
+        
+        r = dialog.exec_()
+        if r == QtWidgets.QDialog.Accepted:
+            return dialog.ui.codeEdit.toPlainText()
+
+
+class IDAngrHookDialog(IDAngrEditorDialog):
+    
+    def __init__(self, addr, text=""):
+        if type(addr) in (int, long):
+            addr = hex(addr).replace("L","")
+        title = str(addr) + " Hook"
+        
+        IDAngrEditorDialog.__init__(self, title, text)
+    
+    @staticmethod
+    def get_hook(addr):
+        code = IDAngrHookDialog.go()
+        if code is None:
+            return None
+        
+        pass
+
 
 class IDAngrAddMemDialog(QtWidgets.QDialog):
     
@@ -162,7 +207,7 @@ class IDAngrConstraintsDialog(QtWidgets.QDialog):
         self.ui.setupUi(self)
         
         if type(item) in (int, long):
-            item = hex(item)
+            item = hex(item).replace("L","")
         
         self.ui.constrEdit.setPlainText(text)
         self.setWindowTitle("Edit Constraints - " + str(item))
@@ -706,8 +751,6 @@ class IDAngrPanelForm(PluginForm):
                                options = (PluginForm.FORM_TAB | PluginForm.FORM_CLOSE_LATER))
 
 
-
-
 class IDAngrActionHandler(idaapi.action_handler_t):
 
     def __init__(self, action):
@@ -740,28 +783,36 @@ class IDAngrActionHandler(idaapi.action_handler_t):
             #    return
             m = IDAngrAddMemDialog.get_mem(addr)
             if m != None:
-                _idangr_panel.add_mem(m[0], m[1])
+                _idangr_panel.add_mem(m[0], m[1]) #addr, size
                 #_idangr_ctx.simmem.append(m)
+        elif self.action == "Hook":
+            addr = idaapi.get_screen_ea()
+            m = IDAngrHookDialog.get_hook(addr)
+            if m != None:
+                _idangr_panel.add_hook(m)
         
         
     def update(self, ctx):
         return idaapi.AST_ENABLE_ALWAYS
 
-class IDAngrHooks(idaapi.UI_Hooks):
+
+class IDAngrUIHooks(idaapi.UI_Hooks):
 
     @staticmethod
     def finish_populating_tform_popup(form, popup):
         idaapi.attach_action_to_popup(form, popup, "Find", "IDAngr/")
         idaapi.attach_action_to_popup(form, popup, "Avoid", "IDAngr/")
         idaapi.attach_action_to_popup(form, popup, "Symbolic", "IDAngr/")
+        idaapi.attach_action_to_popup(form, popup, "Hook", "IDAngr/")
 
 
 idaapi.register_action(idaapi.action_desc_t('Find', 'Find', IDAngrActionHandler("Find")))
 idaapi.register_action(idaapi.action_desc_t('Avoid', 'Avoid', IDAngrActionHandler("Avoid")))
 idaapi.register_action(idaapi.action_desc_t('Symbolic', 'Symbolic', IDAngrActionHandler("Symbolic")))
+idaapi.register_action(idaapi.action_desc_t('Hook', 'Hook', IDAngrActionHandler("Hook")))
 
-_idangr_hooks = IDAngrHooks()
-_idangr_hooks.hook()
+_idangr_ui_hooks = IDAngrUIHooks()
+_idangr_ui_hooks.hook()
 
 
 try:
