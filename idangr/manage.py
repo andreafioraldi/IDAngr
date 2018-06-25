@@ -90,10 +90,19 @@ def get_angrdbg():
         return angrdbg
 
 
+def close():
+    global _conn
+    if _conn != None:
+        _conn[0].close()
+        _conn[1].close()
+    _conn = None
+
+
+
 def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT):
     global _conn, _angr_module, _claripy_module, _pyvex_module, _angrdbg_module, _initialized
     if _conn != None:
-        _conn.close()
+        close()
     _conn = None
     if is_remote:
         _conn = remote(host, port)
@@ -144,12 +153,6 @@ def remote_eval(code):
     return _conn[0].eval(code)
 
 
-def close():
-    global _conn
-    if _conn != None:
-        _conn[0].close()
-        _conn[1].close()
-    _conn = None
 
 def serve_all():
     global _conn

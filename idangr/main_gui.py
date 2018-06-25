@@ -448,7 +448,7 @@ class IDAngrPanelForm(PluginForm):
             except: pass
         #print _idangr_ctx.simmem
         
-        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.files) -1)
+        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.fd) -1 +3)
         
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
@@ -509,7 +509,7 @@ class IDAngrPanelForm(PluginForm):
                 _idangr_ctx.simmem[i][2] = repr(conc[int(_idangr_ctx.simmem[i][0], 16)])
             except: pass
         #print _idangr_ctx.simmem
-        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.files) -1)
+        self.ui.filesBox.setRange(0, len(_idangr_ctx.foundstate.posix.fd) -1 +3)
         
         self.ui.regsView.model().layoutChanged.emit()
         self.ui.memoryView.model().layoutChanged.emit()
