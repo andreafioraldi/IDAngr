@@ -1,7 +1,12 @@
 import idangr
-import idc
 
-sm = idangr.StateManager()
+if not idangr.is_initialized():
+    idangr.init() #use local angrdbg
+
+import idc
+import angrdbg
+
+sm = angrdbg.StateManager()
 
 print "target: found a combination of a1 and a2 that fail the assert"
 

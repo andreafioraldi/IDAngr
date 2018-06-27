@@ -1,7 +1,7 @@
 # must be loaded after the GUI
 
-from idangr import StateShot
-from idangr.gui import IDAngrTextViewerForm
+from angrdbg import StateShot
+from idangr.main_gui import IDAngrTextViewerForm
 
 s = StateShot()
 

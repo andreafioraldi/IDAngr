@@ -1,6 +1,6 @@
 #must be loaded after fgets call
 
-from idangr import StateManager
+from angrdbg import StateManager
 
 smg = StateManager()
 
