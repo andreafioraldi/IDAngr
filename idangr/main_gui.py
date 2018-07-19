@@ -266,6 +266,7 @@ class IDAngrPanelForm(PluginForm):
             try:
                 ctx.simmem[i][2] = repr(conc[int(ctx.simmem[i][0], 16)])
             except: pass
+         
         #print ctx.simmem
         self.ui.filesBox.setRange(0, len(ctx.foundstate.posix.files) -1)
         

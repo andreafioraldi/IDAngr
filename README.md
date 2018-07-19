@@ -30,9 +30,11 @@ You can install indagr as a plugin (see [INSTALL.md](INSTALL.md)), to activate i
 
 IDAngr implements the [angrdbg](https://github.com/andreafioraldi/angrdbg) api in the IDA debugger.
 
-Use `idangr.init` to setup the library and access to the following api.
+Use `idangr.init()` to setup the library and access to the following api.
 
 With `idangr.init(True, HOST, PORT)` you can connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`)
+
+`idangr.is_initialized()` can be used in a script to check if init must be called or not.
 
 #### StateShot
 
