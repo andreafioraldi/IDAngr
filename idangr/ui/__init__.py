@@ -5,5 +5,6 @@ from execute import *
 from viewer import *
 from constraints import *
 from saveds import *
+from explorer import *
 
 from syntax import PythonHighlighter

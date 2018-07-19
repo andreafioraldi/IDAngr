@@ -1,4 +1,4 @@
-all: connect.py panel.py addmem.py execute.py viewer.py constraints.py saveds.py
+all: connect.py panel.py addmem.py execute.py viewer.py constraints.py saveds.py explorer.py
 
 connect.py: %.py: %.ui
 	pyuic5 connect.ui -o connect.py
@@ -21,6 +21,8 @@ constraints.py: %.py: %.ui
 saveds.py: %.py: %.ui
 	pyuic5 saveds.ui -o saveds.py
 
+explorer.py: %.py: %.ui
+	pyuic5 explorer.ui -o explorer.py
 
 clean:
-	rm panel.py addmem.py execute.py viewer.py constraints.py saveds.py
+	rm panel.py addmem.py execute.py viewer.py constraints.py saveds.py explorer.py
