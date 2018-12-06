@@ -23,7 +23,9 @@ class RemoteFile(object):
         except:
             return False
     
-    def read(self, size):
+    def read(self, size=None):
+        if size == None:
+            return self.f.read()
         return self.f.read(size)
     
     def seek(self, pos):
