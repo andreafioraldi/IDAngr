@@ -152,6 +152,9 @@ class IdaRemoteDebugger(object):
         ida_seg = idaapi.get_segm_by_name(".plt")
         return (ida_seg.start_ea, ida_seg.end_ea)
     
+    def get_idata(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(".idata")
+        return (ida_seg.start_ea, ida_seg.end_ea)
     
     #-------------------------------------
     def resolve_name(self, name): #return None on fail
@@ -270,6 +273,10 @@ class IdaLocalDebugger(object):
     
     def get_plt(self): #return tuple(start_addr, end_addr)
         ida_seg = idaapi.get_segm_by_name(".plt")
+        return (ida_seg.start_ea, ida_seg.end_ea)
+    
+    def get_idata(self): #return tuple(start_addr, end_addr)
+        ida_seg = idaapi.get_segm_by_name(".idata")
         return (ida_seg.start_ea, ida_seg.end_ea)
     
     #-------------------------------------
