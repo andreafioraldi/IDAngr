@@ -175,16 +175,27 @@ class IdaDebugger(object):
 
 class IdaPinDebugger(IdaDebugger):
     
-    def before_stateshot(self):
+    def __init__(self, angrdbg_mod, remote=False):
+        self.name = "IDAngr_PIN"
+        self.angrdbg_mod = angrdbg_mod
+        self.remote = remote
+        self.vmmap = []
+    
+    def _get_vmmap(self):
         import win_vmmap
         pid = send_dbg_command("getpid")
-        self.vmmap = win_vmmap.vmmap(pid)
+        self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
+    
+    def before_stateshot(self):
+        self._get_vmmap()
     
     def seg_by_addr(self, addr):
         ida_seg = idaapi.getseg(addr)
         name = "<no name>"
         if ida_seg is not None:
             name = ida_seg.name
+        if len(self.vmmap) == 0:
+            self._get_vmmap()
         for start, end, perms, name in self.vmmap:
             if addr >= start and addr < end:
                 return Segment(name, start, end, perms)
@@ -196,12 +207,15 @@ class IdaPinDebugger(IdaDebugger):
         return self.angrdbg_mod.Segment(ida_seg.name, ida_seg.start_ea, ida_seg.end_ea, perms)
 
 
-def register(conn):
+def register(conn, use_pin=False):
+    dbg_class = IdaDebugger
+    if use_pin:
+        dbg_class = IdaPinDebugger
     if conn:
-        conn[0].modules.angrdbg.register_debugger(IdaDebugger(conn[0].modules.angrdbg, True))
-        conn[1].modules.angrdbg.register_debugger(IdaDebugger(conn[1].modules.angrdbg, True))
+        conn[0].modules.angrdbg.register_debugger(dbg_class(conn[0].modules.angrdbg, True))
+        conn[1].modules.angrdbg.register_debugger(dbg_class(conn[1].modules.angrdbg, True))
     else:
-        get_angrdbg().register_debugger(IdaDebugger(get_angrdbg(), False))
+        get_angrdbg().register_debugger(dbg_class(get_angrdbg(), False))
     
 
 
