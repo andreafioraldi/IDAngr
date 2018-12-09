@@ -32,10 +32,10 @@ You can install indagr as a plugin (see [INSTALL.md](INSTALL.md)), to activate i
 
 ## Api
 
-IDAngr implements the [angrdbg](https://github.com/andreafioraldi/angrdbg) api in the IDA debugger.
+IDAngr implements the angrdbg api in the IDA debugger.
 
-Use `idangr.init(is_remote=False, host=None, port=None, use_pin=False)` to setup the library environment and access to the angrdbg api.
-When `is_remote=False` is True the plugin will connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`).
+Use `idangr.init(is_remote=False, host=None, port=None, use_pin=False)` to setup the library environment and access to the angrdbg api at the beginning of everything.
+When `is_remote` is True the plugin will connect to a remote angrdbg server (start it on the remote machine using `python -m angrdbg`).
 You must set `use_pin` to True if you are connected to Intel Pin with a [PinTool compatible with IDAngr](https://github.com/andreafioraldi/IDAngr-PinTool) (this problably does not work when using remote angrdbg).
 
 `idangr.is_initialized()` can be used in a script to check if init must be called or not.
@@ -55,6 +55,8 @@ A wrapper around angr to simplify the symbolic values creation and to write the 
 + `instance.to_dbg(found_state)`   transfer to the debugger state the evaluated value of the symbolic value created before with sim
 
 note: memory values are the same that are returned by `state.mem[addr]`
+
+A more detailed description of the Api can be found in the [angrdbg](https://github.com/andreafioraldi/angrdbg) repo and in my [Bachelor thesis](https://github.com/andreafioraldi/bsc-thesis).
 
 ## Example
 
