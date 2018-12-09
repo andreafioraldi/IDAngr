@@ -34,11 +34,9 @@ You can install indagr as a plugin (see [INSTALL.md](INSTALL.md)), to activate i
 
 IDAngr implements the [angrdbg](https://github.com/andreafioraldi/angrdbg) api in the IDA debugger.
 
-Use `idangr.init()` to setup the library and access to the following api.
-
-With `idangr.init(True, HOST, PORT)` you can connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`)
-
-There is also an extra boolean parameter `use_pin` that must be True if you are connected to Intel Pin with a [PinTool compatible with IDAngr](https://github.com/andreafioraldi/IDAngr-PinTool).
+Use `idangr.init(is_remote=False, host=None, port=None, use_pin=False)` to setup the library environment and access to the angrdbg api.
+When `is_remote=False` is True the plugin will connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`).
+You must set `use_pin` to True if you are connected to Intel Pin with a [PinTool compatible with IDAngr](https://github.com/andreafioraldi/IDAngr-PinTool) (this problably does not work when using remote angrdbg).
 
 `idangr.is_initialized()` can be used in a script to check if init must be called or not.
 
@@ -87,7 +85,6 @@ If you want to use angr in other debuggers looks at [angrdbg](https://github.com
 I'va also made an almost equal plugin for GDB: [angrgdb](https://github.com/andreafioraldi/angrgdb)
 
 ## TODO
-+ add predefined constraints collection to gui
 + add support to angr data dependence graph integration in the ida view
 + add an iphyton shell to manually change the value in the gui
 + add a taint engine based on intel pin
