@@ -6,9 +6,13 @@
 
 Use [angr](https://github.com/angr/angr) in the IDA Pro debugger generating a state from the current debug session.
 
-> tested only with x86/x86_64 ELF binaries on linux at the moment
+> it works only with x86/x86_64 ELF binaries on linux at the moment
 
-note: to install angr on Windows without compiling it look [here](https://github.com/andreafioraldi/angr-win64-wheels)
+IDAngr needs [angrdbg](https://github.com/andreafioraldi/angrdbg) installed in the same machine of IDA or in a remote machine.
+
+`python2 -m pip install angrdbg`
+
+IDAngr can run only with angr 7 at the moment because IDAPython is only Python 2.
 
 ## GUI
 
