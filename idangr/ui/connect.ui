@@ -74,7 +74,27 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="localBox">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>23</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Use local angr</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QCheckBox" name="pinBox">
+       <property name="text">
+        <string>I'm attached to Intel Pin</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
       <widget class="QCheckBox" name="saveBox">
        <property name="maximumSize">
         <size>
@@ -87,19 +107,6 @@
        </property>
        <property name="checked">
         <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QCheckBox" name="localBox">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>23</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Use local angr</string>
        </property>
       </widget>
      </item>

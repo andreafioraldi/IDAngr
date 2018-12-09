@@ -55,9 +55,9 @@ class IDAngrConnectDialog(QtWidgets.QDialog):
             
             try:
                 if dialog.ui.localBox.isChecked():
-                    manage.init()
+                    manage.init(use_pin=dialog.ui.pinBox.isChecked())
                 else:
-                    manage.init(True, dialog.ui.hostTxt.displayText(), int(dialog.ui.portTxt.displayText()))
+                    manage.init(True, dialog.ui.hostTxt.displayText(), int(dialog.ui.portTxt.displayText()), use_pin=dialog.ui.pinBox.isChecked())
             except Exception as ee:
                 QtWidgets.QMessageBox(QtWidgets.QMessageBox.Critical, 'IDAngr init error', str(ee)).exec_()
                 return False

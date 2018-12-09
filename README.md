@@ -34,6 +34,8 @@ Use `idangr.init()` to setup the library and access to the following api.
 
 With `idangr.init(True, HOST, PORT)` you can connect and use a remote angrdbg server (start it on the remote machine using `python -m angrdbg`)
 
+There is also an extra boolean parameter `use_pin` that must be True if you are connected to Intel Pin with a [PinTool compatible with IDAngr](https://github.com/andreafioraldi/IDAngr-PinTool).
+
 `idangr.is_initialized()` can be used in a script to check if init must be called or not.
 
 #### StateShot

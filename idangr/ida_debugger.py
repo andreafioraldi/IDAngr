@@ -179,11 +179,11 @@ class IdaPinDebugger(IdaDebugger):
         self.name = "IDAngr_PIN"
         self.angrdbg_mod = angrdbg_mod
         self.remote = remote
-        self.vmmap = []
+        self.vmmap = None
     
     def _get_vmmap(self):
         import win_vmmap
-        pid = send_dbg_command("getpid")
+        pid = int(idc.send_dbg_command("getpid"))
         self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
     
     def before_stateshot(self):
@@ -194,7 +194,7 @@ class IdaPinDebugger(IdaDebugger):
         name = "<no name>"
         if ida_seg is not None:
             name = ida_seg.name
-        if len(self.vmmap) == 0:
+        if self.vmmap is None:
             self._get_vmmap()
         for start, end, perms, name in self.vmmap:
             if addr >= start and addr < end:
