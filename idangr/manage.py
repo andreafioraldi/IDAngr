@@ -99,7 +99,7 @@ def close():
 
 
 
-def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT):
+def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT, use_pin=False):
     global _conn, _angr_module, _claripy_module, _pyvex_module, _angrdbg_module, _initialized
     if _conn != None:
         close()
@@ -135,7 +135,7 @@ def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT):
     sys.modules["angrdbg"] = get_angrdbg()
 
     from ida_debugger import register
-    register(_conn)
+    register(_conn, use_pin)
     
     if is_remote:
         thread.start_new_thread(_conn[1].serve_all, tuple())
