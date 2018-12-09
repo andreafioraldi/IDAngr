@@ -61,13 +61,15 @@ def vmmap(pid, is_64=True):
         elif mbi.Protect & win32con.PAGE_WRITECOPY:
             mapperm = SEG_PROT_R
         #print hex(mbi.BaseAddress) +"\t"+ hex(mbi.BaseAddress + mbi.RegionSize) +"\t"+ hex(mapperm)
-        maps.append((mbi.BaseAddress, mbi.BaseAddress + mbi.RegionSize, mapperm, "<name not avaiable>"))
+        maps.append((mbi.BaseAddress, mbi.BaseAddress + mbi.RegionSize, mapperm, ""))
         base += mbi.RegionSize
     
-    if len(maps) == 0:
-        print "IDANGR+PIN WARNING: problably you are not running IDA Pro as ADMIN and so IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
-
     win32api.CloseHandle(proc)
     return maps
 
 
+if __name__ == "__main__":
+    import sys
+    import json
+    m = vmmap(int(sys.argv[1]), sys.argv[2] == "True")
+    print json.dumps(m)

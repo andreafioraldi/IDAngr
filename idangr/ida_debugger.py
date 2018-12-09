@@ -2,7 +2,12 @@ from manage import get_angrdbg
 
 import idc
 import idaapi
+
+import os
+import json
+import subprocess
 import functools
+
 
 def idawrite(f):
     @functools.wraps(f)
@@ -185,6 +190,19 @@ class IdaPinDebugger(IdaDebugger):
         import win_vmmap
         pid = int(idc.send_dbg_command("getpid"))
         self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
+        if len(self.vmmap) == 0:
+            try:
+                o = subprocess.check_output([
+                    'python',
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)), "win_vmmap.py "),
+                    str(pid),
+                    str(idaapi.get_inf_structure().is_64bit())
+                ])
+                self.vmmap = json.loads(o)
+            except:
+                pass
+        if len(self.vmmap) == 0:
+            print "IDANGR+PIN WARNING: problably you are not running IDA Pro as ADMIN and so IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
     
     def before_stateshot(self):
         self._get_vmmap()
