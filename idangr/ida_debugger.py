@@ -196,7 +196,7 @@ class IdaPinDebugger(IdaDebugger):
         print "IDANGR+PIN WARNING: cannot retrieve the vmmap from the pintool, opening the process using the PID (works only when IDA is in the same machine)."
         if os.name == 'nt':
             import win_vmmap
-            pid = int(idc.send_dbg_command("idangr_getpid"))
+            pid = int(idc.send_dbg_command("getpid"))
             self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
             if len(self.vmmap) == 0:
                 try:
@@ -212,7 +212,7 @@ class IdaPinDebugger(IdaDebugger):
             if len(self.vmmap) == 0:
                 print "IDANGR+PIN WARNING: problably you are not running IDA Pro as ADMIN and so IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
         else:
-            pid = int(idc.send_dbg_command("idangr_getpid"))
+            pid = int(idc.send_dbg_command("getpid"))
             self.vmmap = []
             mpath = "/proc/%s/maps" % pid
             # 00400000-0040b000 r-xp 00000000 08:02 538840  /path/to/file
@@ -237,7 +237,7 @@ class IdaPinDebugger(IdaDebugger):
     
     def _get_vmmap(self):
         try:
-            o = idc.send_dbg_command("idangr_vmmap")
+            o = idc.send_dbg_command("vmmap")
             self.vmmap = json.loads(o)
         except:
             try:
