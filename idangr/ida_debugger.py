@@ -4,6 +4,7 @@ import idc
 import idaapi
 
 import os
+import re
 import json
 import subprocess
 import functools
@@ -186,24 +187,60 @@ class IdaPinDebugger(IdaDebugger):
         self.remote = remote
         self.vmmap = None
     
-    def _get_vmmap(self):
-        import win_vmmap
-        pid = int(idc.send_dbg_command("getpid"))
-        self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
-        if len(self.vmmap) == 0:
-            try:
-                o = subprocess.check_output([
-                    'python',
-                    os.path.join(os.path.dirname(os.path.abspath(__file__)), "win_vmmap.py "),
-                    str(pid),
-                    str(idaapi.get_inf_structure().is_64bit())
-                ])
-                self.vmmap = json.loads(o)
-            except:
-                pass
-        if len(self.vmmap) == 0:
-            print "IDANGR+PIN WARNING: problably you are not running IDA Pro as ADMIN and so IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
+    def _get_vmmap_from_pid(self):
+        print "IDANGR+PIN WARNING: cannot retrieve the vmmap from the pintool, opening the process using the PID (works only when IDA is in the same machine)."
+        if os.name == 'nt':
+            import win_vmmap
+            pid = int(idc.send_dbg_command("idangr_getpid"))
+            self.vmmap = win_vmmap.vmmap(pid, idaapi.get_inf_structure().is_64bit())
+            if len(self.vmmap) == 0:
+                try:
+                    o = subprocess.check_output([
+                        'python',
+                        os.path.join(os.path.dirname(os.path.abspath(__file__)), "win_vmmap.py "),
+                        str(pid),
+                        str(idaapi.get_inf_structure().is_64bit())
+                    ])
+                    self.vmmap = json.loads(o)
+                except:
+                    pass
+            if len(self.vmmap) == 0:
+                print "IDANGR+PIN WARNING: problably you are not running IDA Pro as ADMIN and so IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
+        else:
+            pid = int(idc.send_dbg_command("idangr_getpid"))
+            self.vmmap = []
+            mpath = "/proc/%s/maps" % pid
+            # 00400000-0040b000 r-xp 00000000 08:02 538840  /path/to/file
+            pattern = re.compile(
+                "([0-9a-f]*)-([0-9a-f]*) ([rwxps-]*)(?: [^ ]*){3} *(.*)")
+            out = open(mpath).read()
+            matches = pattern.findall(out)
+            if matches:
+                for (start, end, perm, mapname) in matches:
+                    start = int(("0x%s" % start), 0)
+                    end = int(("0x%s" % end), 0)
+                    if mapname == "":
+                        mapname = "mapped"
+                    mapperm = 0
+                    if "r" in perm:
+                        mapperm |= SEG_PROT_R
+                    if "w" in perm:
+                        mapperm |= SEG_PROT_W
+                    if "x" in perm:
+                        mapperm |= SEG_PROT_X
+                    self.vmmap += [(start, end, mapperm, mapname)]
     
+    def _get_vmmap(self):
+        try:
+            o = idc.send_dbg_command("idangr_vmmap")
+            self.vmmap = json.loads(o)
+        except:
+            try:
+                self._get_vmmap_from_pid()
+            except:
+                print "IDANGR+PIN WARNING: IDAngr is not able to retrieve information about the memory layout. In such case IDAngr is not guarateed to work."
+                self.vmmap = []
+            
     def before_stateshot(self):
         self._get_vmmap()
     
@@ -214,9 +251,10 @@ class IdaPinDebugger(IdaDebugger):
             name = ida_seg.name
         if self.vmmap is None:
             self._get_vmmap()
-        for start, end, perms, name in self.vmmap:
+        for start, end, perms, n in self.vmmap:
             if addr >= start and addr < end:
-                return Segment(name, start, end, perms)
+                if n == "": n = name
+                return self.angrdbg_mod.Segment(n, start, end, perms)
         # fallback on ida segs
         perms = 0
         perms |= SEG_PROT_R if ida_seg.perm & idaapi.SEGPERM_READ else 0
