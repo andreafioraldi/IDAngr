@@ -1,3 +1,8 @@
+######################################################
+# Author: Andrea Fioraldi <andreafioraldi@gmail.com> #
+# License: BSD 2-Clause                              #
+######################################################
+
 from manage import get_angrdbg
 
 import idc

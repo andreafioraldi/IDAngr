@@ -1,3 +1,8 @@
+######################################################
+# Author: Andrea Fioraldi <andreafioraldi@gmail.com> #
+# License: BSD 2-Clause                              #
+######################################################
+
 from idaapi import PluginForm
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt

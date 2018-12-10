@@ -1,3 +1,8 @@
+######################################################
+# Author: Andrea Fioraldi <andreafioraldi@gmail.com> #
+# License: BSD 2-Clause                              #
+######################################################
+
 from connect import *
 from panel import *
 from addmem import *

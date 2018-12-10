@@ -1,3 +1,7 @@
+######################################################
+# Author: Andrea Fioraldi <andreafioraldi@gmail.com> #
+# License: BSD 2-Clause                              #
+######################################################
 
 
 class IDAngrPlugin(idaapi.plugin_t):

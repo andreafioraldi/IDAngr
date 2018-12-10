@@ -1,3 +1,8 @@
+######################################################
+# Author: Andrea Fioraldi <andreafioraldi@gmail.com> #
+# License: BSD 2-Clause                              #
+######################################################
+
 import win32con
 import win32api
 
