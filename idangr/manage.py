@@ -124,7 +124,7 @@ def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT, use_pin=Fa
         if "angrdbg" in sys.modules and type(sys.modules["angrdbg"]) == type(sys):
             _angrdbg_module = sys.modules["angrdbg"]
             sys.modules.pop("angrdbg")
-    else:
+    '''else:
         if "angr" in sys.modules:
             sys.modules.pop("angr")
         if "claripy" in sys.modules:
@@ -132,7 +132,7 @@ def init(is_remote=False, host="localhost", port=DEFAULT_SERVER_PORT, use_pin=Fa
         if "pyvex" in sys.modules:
             sys.modules.pop("pyvex")
         if "angrdbg" in sys.modules:
-            sys.modules.pop("angrdbg")
+            sys.modules.pop("angrdbg")'''
     
     sys.modules["angr"] = get_angr()
     sys.modules["claripy"] = get_claripy()
