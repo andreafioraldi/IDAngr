@@ -58,6 +58,10 @@ note: memory values are the same that are returned by `state.mem[addr]`
 
 A more detailed description of the Api can be found in the [angrdbg](https://github.com/andreafioraldi/angrdbg) repo and in my [Bachelor thesis](https://github.com/andreafioraldi/bsc-thesis).
 
+#### hook_lib_funcs
+
+Try to hook functions that are recognized by IDA as inserted by the compiler to the corrispondent simprocedure if present.
+
 ## Example
 
 ```python
