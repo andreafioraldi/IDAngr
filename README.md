@@ -95,4 +95,21 @@ I'va also made an almost equal plugin for GDB: [angrgdb](https://github.com/andr
 + add an iphyton shell to manually change the value in the gui
 + add a taint engine based on intel pin
 
+## Cite
 
+
+## Cite
+
+Thesis [PDF](https://arxiv.org/pdf/2006.16601.pdf).
+
+Bibtex:
+```
+@misc{fioraldi2020symbolic,
+    title={Symbolic Execution and Debugging Synchronization},
+    author={Andrea Fioraldi},
+    year={2020},
+    eprint={2006.16601},
+    archivePrefix={arXiv},
+    primaryClass={cs.CR}
+}
+```
