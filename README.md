@@ -97,9 +97,6 @@ I'va also made an almost equal plugin for GDB: [angrgdb](https://github.com/andr
 
 ## Cite
 
-
-## Cite
-
 Thesis [PDF](https://arxiv.org/pdf/2006.16601.pdf).
 
 Bibtex:
